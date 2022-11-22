@@ -1,0 +1,53 @@
+DROP DATABASE IF EXISTS Art_museum;
+CREATE DATABASE Art_museum;
+USE Art_museum;
+
+
+
+CREATE TABLE ART_OBJECT 
+	(Title			VARCHAR(20)				NOT NULL,
+    Year			YEAR					NOT NULL,
+    Description	    VARCHAR(50)	,			
+    ArtID 			INT						NOT NULL,
+    PRIMARY KEY(ArtID));
+    
+CREATE TABLE ARTIST
+	(Epoch		  VARCHAR(20)			NOT NULL,
+    Description	  VARCHAR(20)		,
+    MainStyle	  VARCHAR(50),
+    Fname	      VARCHAR(15)			NOT NULL,
+    Lname		  VARCHAR(20) 			NOT NULL,
+    Country_origin	VARCHAR(20)	,
+    DateDied		YEAR	,
+    DateBorn		YEAR 			NOT NULL,	
+    PRIMARY KEY(Artist_id, Fname, Lname),
+    FOREIGN KEY(Artist_id) REFERENCES ART_OBJECT(ArtID));
+    
+CREATE TABLE OTHER 
+	(Type			VARCHAR(10),
+    Style	        VARCHAR(10),
+    PRIMARY KEY(ArtID),
+    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
+CREATE TABLE PAINTING 
+	(Style			VARCHAR(20)	,
+    Paint_type		VARCHAR(20),
+    Drawn_on		VARCHAR(20),
+    PRIMARY KEY(ArtID),
+    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
+CREATE TABLE STATUE
+	(Height			VARCHAR(20),
+    Style			VARCHAR(20),
+    Material		VARCHAR(20),
+    PRIMARY KEY(ArtID),
+    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
+CREATE TABLE SCULPTURE 
+	(Height		INT		NOT NULL,
+    Style 		VARCHAR(20),	
+    Weight		INT    NOT NULL,
+    Material	VARCHAR(20)
+    PRIMARY KEY(ArtID),
+    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
