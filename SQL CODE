@@ -2,18 +2,32 @@ DROP DATABASE IF EXISTS Art_museum;
 CREATE DATABASE Art_museum;
 USE Art_museum;
 
+CREATE TABLE BORROWED_COLLECTION 
+	(collection_name	   VARCHAR(20)	,
+    Date_returned	       DATE	      ,
+    Date_borrowed  			DATE,
+    PRIMARY KEY(Name),
+    FOREIGN KEY(collection_name) REFERENCES OWNED_COLLECTION(Name));
+    
+CREATE TABLE OWNED_COLLECTION
+	(Name				VARCHAR(20)		NOT NULL,
+    Description			VARCHAR(50),
+    Address				VARCHAR(20),
+    Phone				INT,
+    Type		VARCHAR(20), 
+    PRIMARY KEY(Name));
 
 
 CREATE TABLE ART_OBJECT 
 	(Title			VARCHAR(20)				NOT NULL,
     Year			YEAR					NOT NULL,
-    Description	    VARCHAR(50)	,			
+    Description	    TEXT,			
     ArtID 			INT						NOT NULL,
     PRIMARY KEY(ArtID));
     
 CREATE TABLE ARTIST
 	(Epoch		  VARCHAR(20)			NOT NULL,
-    Description	  VARCHAR(20)		,
+    Description	  TEXT		,
     MainStyle	  VARCHAR(50),
     Fname	      VARCHAR(15)			NOT NULL,
     Lname		  VARCHAR(20) 			NOT NULL,
@@ -47,7 +61,13 @@ CREATE TABLE SCULPTURE
 	(Height		INT		NOT NULL,
     Style 		VARCHAR(20),	
     Weight		INT    NOT NULL,
-    Material	VARCHAR(20)
+    Material	VARCHAR(20),
     PRIMARY KEY(ArtID),
     FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
+CREATE TABLE EXHIBITION
+	(Name     VARCHAR(20)	NOT NULL,
+    Start_date	date		NOT NULL,
+    End_date	DATE		NOT NULL);
+
     
