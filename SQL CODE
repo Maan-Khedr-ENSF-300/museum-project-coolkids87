@@ -15,7 +15,7 @@ CREATE TABLE ARTIST
    	DateDied		DATE,
    	PRIMARY KEY(ArtistID, Fname, Lname));
 	
-INSERT INTO ARTIST(ArtistID, Fname, Lname, Epoch, Description, MainStyle, Country_origin, DateBorn, DateDied)
+INSERT INTO ARTIST(ArtistID, Fname, Lname, Epoch, Descript, MainStyle, Country_origin, DateBorn, DateDied)
 VALUES
 ('A-0000', 'Leonardo', 'Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
 ('A-0001', 'Imogen', 'Cunningham', '20th Century', 'Photographer', 'Pictorialist',  'USA', '1883-04-12', '1976-06-23')
@@ -24,7 +24,7 @@ VALUES
 DROP TABLE IF EXISTS ART_OBJECT;
 CREATE TABLE ART_OBJECT 
 	(Title			VARCHAR(20)		NOT NULL,
-    	YearCreated		YEAR			NOT NULL,
+    	YearCreated		INT			NOT NULL,
     	Descript	    	TEXT,		
 	Epoch			VARCHAR(20),
 	CultureOfOrigin		VARCHAR(20),
@@ -33,7 +33,7 @@ CREATE TABLE ART_OBJECT
     	PRIMARY KEY(ArtID),
 	FOREIGN KEY(ArtistID) REFERENCES ARTIST(ArtistID));
 
-INSERT INTO ARTIST(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, ArtistID)
+INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, ArtistID)
 VALUES
 ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'A-0000'),
 ('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'A-0001')
