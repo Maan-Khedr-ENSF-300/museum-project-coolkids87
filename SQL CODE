@@ -1,28 +1,16 @@
 DROP DATABASE IF EXISTS Art_museum;
 CREATE DATABASE Art_museum;
 USE Art_museum;
-
-CREATE TABLE BORROWED_COLLECTION 
-	(collection_name	   VARCHAR(20)	,
-    Date_returned	       DATE	      ,
-    Date_borrowed  			DATE,
-    PRIMARY KEY(Name),
-    FOREIGN KEY(collection_name) REFERENCES OWNED_COLLECTION(Name));
-    
-CREATE TABLE OWNED_COLLECTION
-	(Name				VARCHAR(20)		NOT NULL,
-    Description			VARCHAR(50),
-    Address				VARCHAR(20),
-    Phone				INT,
-    Type		VARCHAR(20), 
-    PRIMARY KEY(Name));
-
-
+-- Overall, I think this design checks out I am just not sure if there needs to be cascade triggers added on.
 CREATE TABLE ART_OBJECT 
-	(Title			VARCHAR(20)				NOT NULL,
+   (Title			VARCHAR(20)				NOT NULL,
     Year			YEAR					NOT NULL,
     Description	    TEXT,			
+    Country_Origin		VARCHAR(20), -- COULD BE UNKNOWN
+    Epoch			VARCHAR(20),  -- COULD BE UNKNOWN,
     ArtID 			INT						NOT NULL,
+    ArtistID 		INT						NOT NULL,
+    PRIMARY KEY(ArtistID),
     PRIMARY KEY(ArtID));
     
 CREATE TABLE ARTIST
@@ -35,7 +23,7 @@ CREATE TABLE ARTIST
     DateDied		YEAR	,
     DateBorn		YEAR 			NOT NULL,	
     PRIMARY KEY(Artist_id, Fname, Lname),
-    FOREIGN KEY(Artist_id) REFERENCES ART_OBJECT(ArtID));
+    FOREIGN KEY(Artist_id) REFERENCES ART_OBJECT(ArtistID));
     
 CREATE TABLE OTHER 
 	(Type			VARCHAR(10),
@@ -69,5 +57,27 @@ CREATE TABLE EXHIBITION
 	(Name     VARCHAR(20)	NOT NULL,
     Start_date	date		NOT NULL,
     End_date	DATE		NOT NULL);
-
+    
+CREATE TABLE OWNED_COLLECTION
+	(Name	 VARCHAR(20) 	NOT NULL UNIQUE,
+    Address		VARCHAR(50) 	NOT NULL,
+    Description	VARCHAR(100),
+    Phone		INT 	NOT NULL,
+    Type		VARCHAR(20),
+    Contact_phone 	INT 	NOT NULL UNIQUE,
+    Contact_Fname		VARCHAR(20)    NOT NULL,
+    Contact_Lname		VARCHAR(20) 	NOT NULL,
+    Date_acquired		DATE			NOT NULL,
+    Status			VARCHAR(15)			NOT NULL,
+    COST			INT				NOT NULL,
+    PRIMARY KEY(ArtID),
+    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
+CREATE TABLE BORROWED_COLLECTION 
+	(BC_Name	   VARCHAR(20)	  NOT NULL UNIQUE,
+    Date_returned	       DATE	      NOT NULL,
+    Date_borrowed  			DATE		NOT NULL,
+    PRIMARY KEY(ArtID),
+    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
     
