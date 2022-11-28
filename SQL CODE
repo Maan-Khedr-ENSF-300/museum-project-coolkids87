@@ -1,6 +1,70 @@
 DROP DATABASE IF EXISTS Art_museum;
 CREATE DATABASE Art_museum;
 USE Art_museum;
+
+
+DROP TABLE IF EXISTS ARTIST;
+CREATE TABLE ARTIST
+	(ArtistID		VARCHAR(10)		NOT NULL,
+	Fname	      		VARCHAR(20)		NOT NULL,
+   	Lname		 	VARCHAR(20) 		NOT NULL,
+	Epoch		 	VARCHAR(20)		NOT NULL,
+    	Descript	 	TEXT,
+    	MainStyle	 	VARCHAR(50),
+   	Country_origin		VARCHAR(20),
+	DateBorn		DATE 			NOT NULL,	
+   	DateDied		DATE,
+   	PRIMARY KEY(ArtistID, Fname, Lname));
+	
+INSERT INTO ARTIST(ArtistID, Fname, Lname, Epoch, Descript, MainStyle, Country_origin, DateBorn, DateDied)
+VALUES
+('A-0000', 'Leonardo', 'Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
+('A-0001', 'Imogen', 'Cunningham', '20th Century', 'Photographer', 'Pictorialist',  'USA', '1883-04-12', '1976-06-23')
+;
+
+DROP TABLE IF EXISTS ART_OBJECT;
+CREATE TABLE ART_OBJECT 
+	(Title			VARCHAR(20)		NOT NULL,
+    	YearCreated		INT			NOT NULL,
+    	Descript	    	TEXT,		
+	Epoch			VARCHAR(20),
+	CultureOfOrigin		VARCHAR(20),
+    	ArtID 			CHAR(10)		NOT NULL,
+	ArtistID		VARCHAR(10)		NOT NULL,
+    	PRIMARY KEY(ArtID),
+	FOREIGN KEY(ArtistID) REFERENCES ARTIST(ArtistID));
+
+INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, ArtistID)
+VALUES
+('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'A-0000'),
+('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'A-0001')
+;
+
+DROP TABLE IF EXISTS BORROWED_COLLECTION;
+CREATE TABLE BORROWED_COLLECTION 
+	(ArtID			CHAR(10)		NOT NULL,
+	collection_name	   	VARCHAR(20),
+	Date_borrowed  		DATE			NOT NULL,
+	Date_returned	       	DATE,
+    	PRIMARY KEY(ArtID, collection_name),
+    	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
+DROP TABLE IF EXISTS OWNED_COLLECTION;
+CREATE TABLE OWNED_COLLECTION
+	(ArtID			CHAR(10)		NOT NULL,
+	Name			VARCHAR(20)		NOT NULL,
+   	Descript		VARCHAR(50),
+   	Address			VARCHAR(20),
+   	Phone			INT,
+   	Type			VARCHAR(20), 
+	ContactPhone		INT			NOT NULL,
+	ContactFName		VARCHAR(25)		NOT NULL,
+	ContactLName		VARCHAR(25)		NOT NULL,
+   	PRIMARY KEY(ArtID, Name),
+	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+
+DROP TABLE IF EXISTS OTHER;
+
 -- Overall, I think this design checks out I am just not sure if there needs to be cascade triggers added on.
 CREATE TABLE ART_OBJECT 
    (Title			VARCHAR(20)				NOT NULL,
@@ -25,35 +89,54 @@ CREATE TABLE ARTIST
     PRIMARY KEY(Artist_id, Fname, Lname),
     FOREIGN KEY(Artist_id) REFERENCES ART_OBJECT(ArtistID));
     
+
 CREATE TABLE OTHER 
-	(Type			VARCHAR(10),
-    Style	        VARCHAR(10),
-    PRIMARY KEY(ArtID),
-    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
-    
+	(ArtID 			CHAR(10)		NOT NULL,
+	Type			VARCHAR(10),
+    	Style	        	VARCHAR(10),
+    	PRIMARY KEY(ArtID),
+    	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+
+DROP TABLE IF EXISTS PAINTING;
 CREATE TABLE PAINTING 
-	(Style			VARCHAR(20)	,
-    Paint_type		VARCHAR(20),
-    Drawn_on		VARCHAR(20),
-    PRIMARY KEY(ArtID),
-    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
-    
+	(ArtID 			CHAR(10)		NOT NULL,
+	Style			VARCHAR(20),
+    	Paint_type		VARCHAR(20),
+    	Drawn_on		VARCHAR(20),
+    	PRIMARY KEY(ArtID),
+    	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+
+DROP TABLE IF EXISTS STATUE;
 CREATE TABLE STATUE
-	(Height			VARCHAR(20),
-    Style			VARCHAR(20),
-    Material		VARCHAR(20),
-    PRIMARY KEY(ArtID),
-    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
-    
+	(ArtID 			CHAR(10)		NOT NULL,
+	Height			FLOAT,
+	Weight			FLOAT,			
+    	Style			VARCHAR(20),
+    	Material		VARCHAR(20),
+    	PRIMARY KEY(ArtID),
+    	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+ 
+DROP TABLE IF EXISTS SCULPTURE;
 CREATE TABLE SCULPTURE 
-	(Height		INT		NOT NULL,
-    Style 		VARCHAR(20),	
-    Weight		INT    NOT NULL,
-    Material	VARCHAR(20),
-    PRIMARY KEY(ArtID),
-    FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
-    
+	(ArtID 			CHAR(10)		NOT NULL,
+	Height			FLOAT,
+	Weight			FLOAT,			
+    	Style			VARCHAR(20),
+    	Material		VARCHAR(20),
+    	PRIMARY KEY(ArtID),
+    	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));	
+ 
+DROP TABLE IF EXISTS EXHIBITION;
 CREATE TABLE EXHIBITION
+
+	(ArtID 			CHAR(10)		NOT NULL,		
+	Name    		VARCHAR(20)		NOT NULL,
+    	Start_date		DATE			NOT NULL,
+    	End_date		DATE			NOT NULL,
+	PRIMARY KEY(ArtID, Name),
+	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+
+
 	(Name     VARCHAR(20)	NOT NULL,
     Start_date	date		NOT NULL,
     End_date	DATE		NOT NULL);
@@ -80,4 +163,5 @@ CREATE TABLE BORROWED_COLLECTION
     PRIMARY KEY(ArtID),
     FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
     
+
     
