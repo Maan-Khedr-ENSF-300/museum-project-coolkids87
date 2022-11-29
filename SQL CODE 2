@@ -1,0 +1,158 @@
+DROP DATABASE IF EXISTS Art_museum;
+CREATE DATABASE Art_museum;
+USE Art_museum;
+
+DROP TABLE IF EXISTS ARTIST;
+CREATE TABLE ARTIST
+	(AName			VARCHAR(500)		NOT NULL,
+	Epoch		 	VARCHAR(250),
+	Descript	 	VARCHAR(500),
+	MainStyle	 	VARCHAR(500),
+   	Country_origin	VARCHAR(100),
+	DateBorn		DATE,	
+   	DateDied		DATE,
+   	PRIMARY KEY(AName));
+	
+INSERT INTO ARTIST(AName, Epoch, Descript, MainStyle, Country_origin, DateBorn, DateDied)
+VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
+('Imogen Cunningham', '20th Century', 'Photographer', 'Pictorialist',  'USA', '1883-04-12', '1976-06-23'),
+('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'A French sculptor and painter. He is best known for designing Liberty Enlightening the World, commonly known as the Statue of Liberty.',
+'Classical Statues', 'France', '1834-04-02', '1904-10-04');
+
+
+DROP TABLE IF EXISTS EXHIBITION;
+CREATE TABLE EXHIBITION
+	(EName    		VARCHAR(50)		NOT NULL,
+	Start_date		DATE			NOT NULL,
+	End_date		DATE,
+	PRIMARY KEY(EName));
+    
+INSERT INTO EXHIBITION(EName, Start_date, End_date)
+VALUES ('Yves Saint Laurent aux Musées', '2023-01-29', '2023-05-15'), 
+('150 years of Mondrian', '2022-10-29', '2023-02-10');
+
+DROP TABLE IF EXISTS ART_OBJECT;
+CREATE TABLE ART_OBJECT 
+	(Title			VARCHAR(20)			NOT NULL,
+	YearCreated		INT, 			 
+	Descript	    TEXT,		
+	Epoch			VARCHAR(200),
+	CultureOfOrigin	VARCHAR(20),
+	ArtID 			CHAR(10)			NOT NULL,
+	Artist_Name		VARCHAR(100)		NOT NULL,
+    ExName			VARCHAR(200)		DEFAULT 'N/A',
+	PRIMARY KEY(ArtID),
+	CONSTRAINT AFFK
+		FOREIGN KEY(Artist_Name) REFERENCES ARTIST(AName)
+			ON DELETE CASCADE		ON UPDATE CASCADE,
+    CONSTRAINT EXFFK
+		FOREIGN KEY(ExName) REFERENCES EXHIBITION(EName)
+			ON DELETE CASCADE	ON UPDATE CASCADE);
+
+INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName)
+VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'Yves Saint Laurent aux Musées'),
+('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian'),
+('Statue of Liberty', '1876', 'Well-known statue symbolizing freedom and independence', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi', 'Yves Saint Laurent aux Musées');
+
+DROP TABLE IF EXISTS PERMANENT_COLLECTION;
+CREATE TABLE PERMANENT_COLLECTION
+	(ArtID			CHAR(10)		NOT NULL,
+	DateAcquired	date			NOT NULL,
+    Status			VARCHAR(20)		NOT NULL,
+    Cost			int				NOT NULL,
+    CONSTRAINT AOFFK
+		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
+			ON DELETE CASCADE		ON UPDATE CASCADE);
+
+
+DROP TABLE IF EXISTS OTHER_COLLECTION;
+CREATE TABLE OTHER_COLLECTION
+	(OName			VARCHAR(30)			NOT NULL,
+    Address	   	 	VARCHAR(50),
+    Descrip			VARCHAR(500),
+    Otype			VARCHAR(10),
+    ContactPhone	VARCHAR(30)			NOT NULL UNIQUE, -- Can't be INT as it is larger than MAX INT
+    ContactName		VARCHAR(20)			NOT NULL UNIQUE,
+    PRIMARY KEY(OName));
+
+INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName)
+VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL 60637, United States', 'The Renaissance Society, founded in 1915, is a leading 
+independent contemporary art museum located on the campus of the University of Chicago, with a focus on the commissioning and production of new works by international artists', 
+'Museum', 17737028670, 'Pierre Sondeljker');
+
+DROP TABLE IF EXISTS BORROWED_COLLECTION;
+CREATE TABLE BORROWED_COLLECTION 
+	(ArtID				CHAR(10)		NOT NULL,
+	collection_name	   	VARCHAR(40)		NOT NULL,
+	Date_borrowed  		DATE			NOT NULL,
+	Date_returned	    DATE,
+	PRIMARY KEY(ArtID, collection_name),
+	CONSTRAINT BAFFK
+		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
+			ON DELETE CASCADE			ON UPDATE CASCADE,
+    FOREIGN KEY(collection_name) REFERENCES OTHER_COLLECTION(OName)
+		ON DELETE CASCADE			ON UPDATE CASCADE);
+
+INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
+VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20');
+
+DROP TABLE IF EXISTS OTHER;
+CREATE TABLE OTHER 
+	(ArtID 			CHAR(10)		NOT NULL,
+	Type			VARCHAR(10),
+	Style	        VARCHAR(10),
+	PRIMARY KEY(ArtID),
+	CONSTRAINT OAIFKK
+		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
+			ON DELETE CASCADE		ON UPDATE CASCADE);
+INSERT INTO OTHER (ArtID, Type, Style) 
+VALUES ('O-0001', 'Photograph', 'Floral');
+
+DROP TABLE IF EXISTS PAINTING;
+CREATE TABLE PAINTING 
+	(ArtID 			CHAR(10)		NOT NULL,
+	Style			VARCHAR(20),
+	Paint_type		VARCHAR(20),
+	Drawn_on		VARCHAR(20),
+	PRIMARY KEY(ArtID),
+	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    
+INSERT INTO PAINTING (ArtID, Style, Paint_type, Drawn_on) 
+VALUES ('P-0000', 'Renaissance', 'Portrait', 'Cottonwood');
+
+DROP TABLE IF EXISTS STATUE;
+CREATE TABLE STATUE
+	(ArtID 			CHAR(10)		NOT NULL,
+	Height_meters	FLOAT,
+	Weight_tonnes	FLOAT,			
+	Style			VARCHAR(20),
+	Material_s		VARCHAR(100),
+	PRIMARY KEY(ArtID),
+	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+ INSERT INTO STATUE (ArtID, Height_meters, Weight_tonnes, Style, Material_s) 
+ VALUES ('L-0001', '46.0', '204.1', 'neoclassical', 'Copper, Steel, Gold, Cast Iron');
+
+-- SQL Queries
+-- Going forward, maybe we can make comments with just '--' as it doesn't affect running queries.
+-- Query 1)
+-- Query 2)
+
+--- SELECT * FROM ARTIST;
+
+-- Query 3)
+-- retrieves and displays titles of objects in order from newest to oldest (DESC)
+
+/*
+SELECT Title 
+FROM ART_OBJECT
+ORDER BY YearCreated DESC;
+*/
+
+-- Query 4)
+-- Nested retrieval query
+-- will output the name's of artists that have created objects that are all created later than all Italian art objects
+SELECT Artist_Name
+FROM ART_OBJECT
+WHERE YearCreated > ALL (SELECT YearCreated
+						FROM ART_OBJECT
+						WHERE CultureOfOrigin = 'Italy');
