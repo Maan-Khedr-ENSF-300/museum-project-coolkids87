@@ -58,17 +58,19 @@ DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
 	(ArtID			CHAR(10)		NOT NULL,
 	DateAcquired	date			NOT NULL,
-    Status			VARCHAR(20)		NOT NULL,
+    Status			VARCHAR(20)		NOT NULL,  -- Status: on display, on loan, or stored
     Cost			int				NOT NULL,
     CONSTRAINT AOFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
-
+            
+INSERT INTO PERMANENT_COLLECTION (ArtID, DateAcquired, Status, Cost)
+VALUES ('O-0001', '2021-01-01', 'On display', '22000');
 
 DROP TABLE IF EXISTS OTHER_COLLECTION;
 CREATE TABLE OTHER_COLLECTION
 	(OName			VARCHAR(30)			NOT NULL,
-    Address	   	 	VARCHAR(50),
+    Address	   	 	VARCHAR(60),
     Descrip			VARCHAR(500),
     Otype			VARCHAR(10),
     ContactPhone	VARCHAR(30)			NOT NULL UNIQUE, -- Can't be INT as it is larger than MAX INT
@@ -78,7 +80,8 @@ CREATE TABLE OTHER_COLLECTION
 INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName)
 VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL 60637, United States', 'The Renaissance Society, founded in 1915, is a leading 
 independent contemporary art museum located on the campus of the University of Chicago, with a focus on the commissioning and production of new works by international artists', 
-'Museum', 17737028670, 'Pierre Sondeljker');
+'Museum', 17737028670, 'Pierre Sondeljker'),
+('National Park Service', '1849 C Street, Washington, D.C. 20240, United States', 'The National Park Service is a United States federal agency that manages national parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
 
 DROP TABLE IF EXISTS BORROWED_COLLECTION;
 CREATE TABLE BORROWED_COLLECTION 
@@ -94,7 +97,8 @@ CREATE TABLE BORROWED_COLLECTION
 		ON DELETE CASCADE			ON UPDATE CASCADE);
 
 INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
-VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20');
+VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
+('L-0001', 'National Park Service', '2022-11-01', '2023-05-20');
 
 DROP TABLE IF EXISTS OTHER;
 CREATE TABLE OTHER 
@@ -135,6 +139,23 @@ CREATE TABLE STATUE
 -- SQL Queries
 -- Going forward, maybe we can make comments with just '--' as it doesn't affect running queries.
 -- Query 1)
+SELECT * FROM ARTIST;
+SELECT * FROM EXHIBITION;
+SELECT * FROM ART_OBJECT;
+SELECT * FROM OTHER;
+SELECT * FROM PAINTING;
+SELECT * FROM STATUE;
+SELECT * FROM PERMANENT_COLLECTION;
+SELECT * FROM OTHER_COLLECTION;
+SELECT * FROM BORROWED_COLLECTION;
+-- These tables are related in many ways. 
+-- OTHER, PAINTING, and STATUE are subclasses of ART_OBJECT connected by the key ArtID.
+-- Within ART_OBJECT we have triggers for ExName(exhibition name) and Artist_Name that perform CASCADEs on DELETEs and UPDATEs.
+-- PERMANENT_COLLECTION and BORROWED_COLLECTION are also subclasses of ART_OBJECT connected by the key ArtID.
+-- BORROWED_COLLECTION is a collection with art objects borrowed from the collections within OTHER_COLLECTION.
+-- ART_OBJECT and ARTIST are related through a relationship of creation. The ART_OBJECT is created by an ARTIST(or multiple artists) and the ARTIST creates ART_OBJECTs.
+-- ART_OBJECTs are related to EXHIBITION through their respective keys.
+
 -- Query 2)
 
 --- SELECT * FROM ARTIST;
