@@ -6,19 +6,21 @@ DROP TABLE IF EXISTS ARTIST;
 CREATE TABLE ARTIST
 	(AName			VARCHAR(500)		NOT NULL,
 	Epoch		 	VARCHAR(250),
-	Descript	 	VARCHAR(500),
+	Descriptions	VARCHAR(500),
 	MainStyle	 	VARCHAR(500),
    	Country_origin	VARCHAR(100),
 	DateBorn		DATE,	
    	DateDied		DATE,
    	PRIMARY KEY(AName));
 	
-INSERT INTO ARTIST(AName, Epoch, Descript, MainStyle, Country_origin, DateBorn, DateDied)
+INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied)
 VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
-('Imogen Cunningham', '20th Century', 'Photographer', 'Pictorialist',  'USA', '1883-04-12', '1976-06-23'),
-('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'A French sculptor and painter. He is best known for designing Liberty Enlightening the World, commonly known as the Statue of Liberty.',
-'Classical Statues', 'France', '1834-04-02', '1904-10-04');
-
+('Imogen Cunningham', '20th Century', 'Photographer', 'Black and White',  'USA', '1883-04-12', '1976-06-23'),
+('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'A French sculptor and painter. He is best known for designing Liberty Enlightening the World, commonly known as the Statue of Liberty.', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
+('Lewis Hine', 'Industrial Revolution', 'Captured the negative front of human nature through grotesque photos of gruelling physically over physical labor' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
+('Johannes Vermeer', 'Dutch Golden Age', 'Artist that primarily painted interior scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15');
+INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn) VALUES
+('Nick Ut', 'Social/tech transformation age', 'Photographer that captured how harsh the human condition can be in certain war climates', 'Black and white', 'Vietnam', '1951-03-29');
 
 DROP TABLE IF EXISTS EXHIBITION;
 CREATE TABLE EXHIBITION
@@ -33,42 +35,53 @@ VALUES ('Yves Saint Laurent aux Musées', '2023-01-29', '2023-05-15'),
 
 DROP TABLE IF EXISTS ART_OBJECT;
 CREATE TABLE ART_OBJECT 
-	(Title			VARCHAR(20)			NOT NULL,
+	(Title			VARCHAR(50)			NOT NULL,
 	YearCreated		INT, 			 
-	Descript	    TEXT,		
+	Descript	    VARCHAR(500),		
 	Epoch			VARCHAR(200),
-	CultureOfOrigin	VARCHAR(20),
+	CultureOfOrigin	VARCHAR(50),
 	ArtID 			CHAR(10)			NOT NULL,
 	Artist_Name		VARCHAR(100)		NOT NULL,
-    ExName			VARCHAR(200)		DEFAULT 'N/A',
+    ExName			VARCHAR(200)		DEFAULT NULL,
 	PRIMARY KEY(ArtID),
-	CONSTRAINT AFFK
+	CONSTRAINT ANFFK	
 		FOREIGN KEY(Artist_Name) REFERENCES ARTIST(AName)
 			ON DELETE CASCADE		ON UPDATE CASCADE,
-    CONSTRAINT EXFFK
+	CONSTRAINT EFFK
 		FOREIGN KEY(ExName) REFERENCES EXHIBITION(EName)
-			ON DELETE CASCADE	ON UPDATE CASCADE);
+			ON DELETE SET NULL			ON UPDATE CASCADE);
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName)
 VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'Yves Saint Laurent aux Musées'),
 ('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian'),
 ('Statue of Liberty', '1876', 'Well-known statue symbolizing freedom and independence', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi', 'Yves Saint Laurent aux Musées');
 
+INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
+('The Terror of War', '1972', 'Photograph depicting the brutality of war and the effects it has on individuals', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
+('Cotton Mill Girl', '1908', 'Photograph depicting the reality of life for working/middle class children during the industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
+('Girl with a Pearl Earring','1665', 'Photo displaying a girl with an earring' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer');
+
+
 DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
 	(ArtID			CHAR(10)		NOT NULL,
 	DateAcquired	date			NOT NULL,
-    Status			VARCHAR(20)		NOT NULL,
+    Status			VARCHAR(20)		NOT NULL,  -- Status: on display, on loan, or stored
     Cost			int				NOT NULL,
     CONSTRAINT AOFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
-
+            
+INSERT INTO PERMANENT_COLLECTION (ArtID, DateAcquired, Status, Cost)
+VALUES ('O-0001', '2021-01-01', 'On display', '22000'),
+('O-0002', '2021-06-05', 'On display', '50000'),
+('O-0003', '2008-05-23', 'On display', '100000'),
+('P-0001', '2000-02-01', 'Locked up', '500000');
 
 DROP TABLE IF EXISTS OTHER_COLLECTION;
 CREATE TABLE OTHER_COLLECTION
 	(OName			VARCHAR(30)			NOT NULL,
-    Address	   	 	VARCHAR(50),
+    Address	   	 	VARCHAR(60),
     Descrip			VARCHAR(500),
     Otype			VARCHAR(10),
     ContactPhone	VARCHAR(30)			NOT NULL UNIQUE, -- Can't be INT as it is larger than MAX INT
@@ -78,7 +91,8 @@ CREATE TABLE OTHER_COLLECTION
 INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName)
 VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL 60637, United States', 'The Renaissance Society, founded in 1915, is a leading 
 independent contemporary art museum located on the campus of the University of Chicago, with a focus on the commissioning and production of new works by international artists', 
-'Museum', 17737028670, 'Pierre Sondeljker');
+'Museum', 17737028670, 'Pierre Sondeljker'),
+('National Park Service', '1849 C Street, Washington, D.C. 20240, United States', 'The National Park Service is a United States federal agency that manages national parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
 
 DROP TABLE IF EXISTS BORROWED_COLLECTION;
 CREATE TABLE BORROWED_COLLECTION 
@@ -90,23 +104,27 @@ CREATE TABLE BORROWED_COLLECTION
 	CONSTRAINT BAFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE			ON UPDATE CASCADE,
-    FOREIGN KEY(collection_name) REFERENCES OTHER_COLLECTION(OName)
-		ON DELETE CASCADE			ON UPDATE CASCADE);
+	CONSTRAINT OCFFK
+		FOREIGN KEY(collection_name) REFERENCES OTHER_COLLECTION(OName)
+			ON DELETE CASCADE			ON UPDATE CASCADE);
 
 INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
-VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20');
+VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
+('L-0001', 'National Park Service', '2022-11-01', '2023-05-20');
 
 DROP TABLE IF EXISTS OTHER;
 CREATE TABLE OTHER 
 	(ArtID 			CHAR(10)		NOT NULL,
-	Type			VARCHAR(10),
-	Style	        VARCHAR(10),
+	Type			VARCHAR(20),
+	Style	        VARCHAR(30),
 	PRIMARY KEY(ArtID),
 	CONSTRAINT OAIFKK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
 INSERT INTO OTHER (ArtID, Type, Style) 
-VALUES ('O-0001', 'Photograph', 'Floral');
+VALUES ('O-0001', 'Photograph', 'Floral'),
+('O-0002', 'Photograph', 'War'),
+('O-0003', 'Photograph', 'Social Change');
 
 DROP TABLE IF EXISTS PAINTING;
 CREATE TABLE PAINTING 
@@ -115,10 +133,13 @@ CREATE TABLE PAINTING
 	Paint_type		VARCHAR(20),
 	Drawn_on		VARCHAR(20),
 	PRIMARY KEY(ArtID),
-	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    CONSTRAINT PFFK
+		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
+			ON DELETE CASCADE		ON UPDATE CASCADE);
     
 INSERT INTO PAINTING (ArtID, Style, Paint_type, Drawn_on) 
-VALUES ('P-0000', 'Renaissance', 'Portrait', 'Cottonwood');
+VALUES ('P-0000', 'Renaissance', 'Portrait', 'Cottonwood'),
+('P-0001', 'Dutch Golden Age', 'Portrait', 'Canvas');
 
 DROP TABLE IF EXISTS STATUE;
 CREATE TABLE STATUE
@@ -128,13 +149,33 @@ CREATE TABLE STATUE
 	Style			VARCHAR(20),
 	Material_s		VARCHAR(100),
 	PRIMARY KEY(ArtID),
-	FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID));
+    CONSTRAINT SAFFK
+		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
+			ON DELETE CASCADE		ON UPDATE CASCADE);
  INSERT INTO STATUE (ArtID, Height_meters, Weight_tonnes, Style, Material_s) 
  VALUES ('L-0001', '46.0', '204.1', 'neoclassical', 'Copper, Steel, Gold, Cast Iron');
 
 -- SQL Queries
--- Going forward, maybe we can make comments with just '--' as it doesn't affect running queries.
 -- Query 1)
+/*
+SELECT * FROM ARTIST;
+SELECT * FROM EXHIBITION;
+SELECT * FROM ART_OBJECT;
+SELECT * FROM OTHER;
+SELECT * FROM PAINTING;
+SELECT * FROM STATUE;
+SELECT * FROM PERMANENT_COLLECTION;
+SELECT * FROM OTHER_COLLECTION;
+SELECT * FROM BORROWED_COLLECTION;
+*/
+-- These tables are related in many ways. 
+-- OTHER, PAINTING, and STATUE are subclasses of ART_OBJECT connected by the key ArtID.
+-- Within ART_OBJECT we have triggers for ExName(exhibition name) and Artist_Name that perform CASCADEs on DELETEs and UPDATEs.
+-- PERMANENT_COLLECTION and BORROWED_COLLECTION are also subclasses of ART_OBJECT connected by the key ArtID.
+-- BORROWED_COLLECTION is a collection with art objects borrowed from the collections within OTHER_COLLECTION.
+-- ART_OBJECT and ARTIST are related through a relationship of creation. The ART_OBJECT is created by an ARTIST(or multiple artists) and the ARTIST creates ART_OBJECTs.
+-- ART_OBJECTs are related to EXHIBITION through their respective keys.
+
 -- Query 2)
 
 --- SELECT * FROM ARTIST;
@@ -151,8 +192,40 @@ ORDER BY YearCreated DESC;
 -- Query 4)
 -- Nested retrieval query
 -- will output the name's of artists that have created objects that are all created later than all Italian art objects
+/*
 SELECT Artist_Name
 FROM ART_OBJECT
 WHERE YearCreated > ALL (SELECT YearCreated
 						FROM ART_OBJECT
 						WHERE CultureOfOrigin = 'Italy');
+*/
+
+--	Query 5)
+/*
+SELECT Title, AName, Descriptions
+FROM ART_OBJECT
+JOIN ARTIST ON ARTIST.AName = ART_OBJECT.Artist_Name;
+*/
+
+--  Query 6) 
+-- having issues with this query, getting an error code 1452 which has to do with FK constraints. Everything seems ok to me...
+
+
+
+-- Query 7)
+/*
+DELETE FROM ART_OBJECT	
+WHERE ArtID = 'O-0001';
+*/
+-- Now, we can see that all tuples containing ArtID = 'O-0001' have been removed from the database:
+/*
+SELECT * FROM ARTIST;
+SELECT * FROM EXHIBITION;
+SELECT * FROM ART_OBJECT;
+SELECT * FROM OTHER;
+SELECT * FROM PAINTING;
+SELECT * FROM STATUE;
+SELECT * FROM PERMANENT_COLLECTION;
+SELECT * FROM OTHER_COLLECTION;
+SELECT * FROM BORROWED_COLLECTION;
+*/
