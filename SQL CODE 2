@@ -18,7 +18,8 @@ VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor',
 ('Imogen Cunningham', '20th Century', 'Photographer', 'Black and White',  'USA', '1883-04-12', '1976-06-23'),
 ('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'A French sculptor and painter. He is best known for designing Liberty Enlightening the World, commonly known as the Statue of Liberty.', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
 ('Lewis Hine', 'Industrial Revolution', 'Captured the negative front of human nature through grotesque photos of gruelling physically over physical labor' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
-('Johannes Vermeer', 'Dutch Golden Age', 'Artist that primarily painted interior scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15');
+('Johannes Vermeer', 'Dutch Golden Age', 'Artist that primarily painted interior scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
+('Paul Landowski', 'Industrial revolution', 'Famous french sculptor that constructed the statue of Jesus Christ in Brazil', 'Realistic', 'France', '1875-06-01', '1961-03-31');
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn) VALUES
 ('Nick Ut', 'Social/tech transformation age', 'Photographer that captured how harsh the human condition can be in certain war climates', 'Black and white', 'Vietnam', '1951-03-29');
 
@@ -53,14 +54,14 @@ CREATE TABLE ART_OBJECT
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName)
 VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'Yves Saint Laurent aux Musées'),
-('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian'),
-('Statue of Liberty', '1876', 'Well-known statue symbolizing freedom and independence', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi', 'Yves Saint Laurent aux Musées');
+('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian');
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
 ('The Terror of War', '1972', 'Photograph depicting the brutality of war and the effects it has on individuals', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
 ('Cotton Mill Girl', '1908', 'Photograph depicting the reality of life for working/middle class children during the industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
-('Girl with a Pearl Earring','1665', 'Photo displaying a girl with an earring' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer');
-
+('Girl with a Pearl Earring','1665', 'Photo displaying a girl with an earring' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer'),
+('Statue of Liberty', '1876', 'Well-known statue symbolizing freedom and independence', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi'),
+('Christ the Redeemer', '1931', 'Famous statue of Jesus Christ located in Rio De Janerio, Brazil', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
 
 DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
@@ -81,12 +82,12 @@ VALUES ('O-0001', '2021-01-01', 'On display', '22000'),
 
 DROP TABLE IF EXISTS OTHER_COLLECTION;
 CREATE TABLE OTHER_COLLECTION
-	(OName			VARCHAR(30)			NOT NULL,
+	(OName			VARCHAR(100)			NOT NULL,
     Address	   	 	VARCHAR(60),
     Descrip			VARCHAR(500),
     Otype			VARCHAR(10),
-    ContactPhone	VARCHAR(30)			NOT NULL UNIQUE, -- Can't be INT as it is larger than MAX INT
-    ContactName		VARCHAR(20)			NOT NULL UNIQUE,
+    ContactPhone	VARCHAR(30)			UNIQUE, -- Can't be INT as it is larger than MAX INT
+    ContactName		VARCHAR(20)			UNIQUE,
     PRIMARY KEY(OName));
 
 INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName)
@@ -94,6 +95,10 @@ VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL 60637, United S
 independent contemporary art museum located on the campus of the University of Chicago, with a focus on the commissioning and production of new works by international artists', 
 'Museum', 17737028670, 'Pierre Sondeljker'),
 ('National Park Service', '1849 C Street, Washington, D.C. 20240, United States', 'The National Park Service is a United States federal agency that manages national parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
+
+INSERT INTO OTHER_COLLECTION (OName, Descrip, Otype) VALUES
+('National Historic Heritage of Brazil', 'Located in Brazil and regulates all historical artifacts and monuments throughout the country', 'Government');
+
 
 DROP TABLE IF EXISTS BORROWED_COLLECTION;
 CREATE TABLE BORROWED_COLLECTION 
@@ -111,7 +116,8 @@ CREATE TABLE BORROWED_COLLECTION
 
 INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
 VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
-('L-0001', 'National Park Service', '2022-11-01', '2023-05-20');
+('L-0001', 'National Park Service', '2022-11-01', '2023-05-20'),
+('L-0002', 'National Historic Heritage of Brazil', '2022-10-20', '2022-11-20');
 
 DROP TABLE IF EXISTS OTHER;
 CREATE TABLE OTHER 
@@ -155,7 +161,8 @@ CREATE TABLE STATUE
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
  INSERT INTO STATUE (ArtID, Height_meters, Weight_tonnes, Style, Material_s) 
- VALUES ('L-0001', '46.0', '204.1', 'neoclassical', 'Copper, Steel, Gold, Cast Iron');
+ VALUES ('L-0001', '46.0', '204.1', 'neoclassical', 'Copper, Steel, Gold, Cast Iron'),
+ ('L-0002', '28.0', '635.0', 'catholic', 'Cement');
 
 -- SQL Queries
 -- Query 1)
@@ -243,4 +250,3 @@ SELECT * FROM PERMANENT_COLLECTION;
 SELECT * FROM OTHER_COLLECTION;
 SELECT * FROM BORROWED_COLLECTION;
 */
-
