@@ -1,0 +1,104 @@
+import mysql.connector
+
+def admin_consol():
+    pass
+def data_entry():
+    pass
+
+def guest_view():
+    print("What are you looking for:")
+    print("1- Artist Information")
+    print("2- Exhibit Information")
+    print("3- Art Object information")
+    print("4- Pia")
+    selection = input()
+
+    if selection == '2':
+        subselection = input('Please type 1 for Athletes or 2 for Coaches:\n')
+        if subselection == '1':
+            athlete_info(cur)
+
+
+def athlete_info(cur):
+
+    instr=""
+    join=""
+    att_selection = input("Do you want to see the Athlete name ? Y or N: ")
+    if att_selection == 'Y':
+        join = 'from athlete naturaljoin PARTICIPANT'
+    
+
+    #instr="select * from athlete where olympicid = %(oid)s"
+    instr="select * from athlete"
+    searchkey=input("please insert the olympicid of the athlete you are looking for (press Enter to view all):") or None
+
+    #cur.execute(instr,{'oid':searchkey})
+    cur.execute(instr)
+    col_names=cur.column_names
+    search_result=cur.fetchall()
+    print("Search found ",len(search_result)," Entries:\n")
+    header_size=len(col_names)
+    for i in range(header_size):
+        print("{:<15s}".format(col_names[i]),end='')
+    print()
+    print(15*header_size*'-')
+    for row in search_result:
+        for val in row:
+            print("{:<15s}".format(str(val)),end='')
+        print()
+        
+
+
+
+
+
+if __name__ == "__main__":
+    
+    # Connect to server
+    print("Welcome to the Arts Museum Database:")
+    print("In order to proceed please select your role from the list below:")
+    print("1-DB Admin")
+    print("2-Data Entry")
+    print("3-Browse as guest")
+
+    selection = input("please type 1, 2, or 3 to select your role:")
+
+    if selection in ['1','2']:
+        username= input("user name:")
+        passcode= input("password:")
+    else:
+        username="guest"   
+        passcode=None
+    
+    cnx = mysql.connector.connect(
+        host="127.0.0.1",
+        port=3306,
+        user=username,
+        password=passcode)    
+    # Get a cursor
+    cur = cnx.cursor()
+    # Execute a query
+    cur.execute("use Art_museum")
+    if selection == '1':
+        admin_consol()
+    elif selection == '2':
+        data_entry()
+    else:
+        guest_view()
+    #insert example
+    inst_country_template= "insert into country values (%s,%s,%s,%s)"
+
+    countryname= input("Please insert name of country to add: ")
+    gnum = input("How many gold medals do this country have (press enter and leave blank if unknown): ") or None
+    snum = input("How many silver medals do this country have (press enter and leave blank if unknown): ") or None
+    bnum = input("How many bronze medals do this country have (press enter and leave blank if unknown): ") or None
+
+    print(type(gnum))
+    print(type(snum))
+
+    inst_country_data = (countryname,gnum,snum,bnum)
+    cur.execute(inst_country_template,inst_country_data)
+    cnx.commit()
+
+     # Close connection
+    cnx.close()
