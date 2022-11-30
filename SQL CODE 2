@@ -41,15 +41,15 @@ CREATE TABLE ART_OBJECT
 	Epoch			VARCHAR(200),
 	CultureOfOrigin	VARCHAR(50),
 	ArtID 			CHAR(10)			NOT NULL,
-	Artist_Name		VARCHAR(100)		NOT NULL,
+	Artist_Name		VARCHAR(100),
     ExName			VARCHAR(200)		DEFAULT NULL,
 	PRIMARY KEY(ArtID),
 	CONSTRAINT ANFFK	
 		FOREIGN KEY(Artist_Name) REFERENCES ARTIST(AName)
-			ON DELETE CASCADE		ON UPDATE CASCADE,
+			ON DELETE SET NULL ON UPDATE CASCADE,   -- better design than ON DELETE CASCADE as records for other tables are preserved.
 	CONSTRAINT EFFK
 		FOREIGN KEY(ExName) REFERENCES EXHIBITION(EName)
-			ON DELETE SET NULL			ON UPDATE CASCADE);
+			ON DELETE SET NULL ON UPDATE CASCADE);
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName)
 VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'Yves Saint Laurent aux Musées'),
@@ -64,10 +64,11 @@ INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, Art
 
 DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
-	(ArtID			CHAR(10)		NOT NULL,
+	(ArtID			CHAR(10),
 	DateAcquired	date			NOT NULL,
     Status			VARCHAR(20)		NOT NULL,  -- Status: on display, on loan, or stored
     Cost			int				NOT NULL,
+    PRIMARY KEY(ArtID),
     CONSTRAINT AOFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
@@ -96,17 +97,17 @@ independent contemporary art museum located on the campus of the University of C
 
 DROP TABLE IF EXISTS BORROWED_COLLECTION;
 CREATE TABLE BORROWED_COLLECTION 
-	(ArtID				CHAR(10)		NOT NULL,
-	collection_name	   	VARCHAR(40)		NOT NULL,
+	(ArtID				CHAR(10),
+	collection_name	   	VARCHAR(40),
 	Date_borrowed  		DATE			NOT NULL,
 	Date_returned	    DATE,
-	PRIMARY KEY(ArtID, collection_name),
+	PRIMARY KEY(ArtID),
 	CONSTRAINT BAFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE			ON UPDATE CASCADE,
 	CONSTRAINT OCFFK
 		FOREIGN KEY(collection_name) REFERENCES OTHER_COLLECTION(OName)
-			ON DELETE CASCADE			ON UPDATE CASCADE);
+			ON DELETE SET NULL			ON UPDATE CASCADE);
 
 INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
 VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
@@ -114,13 +115,14 @@ VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
 
 DROP TABLE IF EXISTS OTHER;
 CREATE TABLE OTHER 
-	(ArtID 			CHAR(10)		NOT NULL,
+	(ArtID 			CHAR(10),
 	Type			VARCHAR(20),
 	Style	        VARCHAR(30),
 	PRIMARY KEY(ArtID),
 	CONSTRAINT OAIFKK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
+            
 INSERT INTO OTHER (ArtID, Type, Style) 
 VALUES ('O-0001', 'Photograph', 'Floral'),
 ('O-0002', 'Photograph', 'War'),
@@ -128,14 +130,14 @@ VALUES ('O-0001', 'Photograph', 'Floral'),
 
 DROP TABLE IF EXISTS PAINTING;
 CREATE TABLE PAINTING 
-	(ArtID 			CHAR(10)		NOT NULL,
+	(ArtID 			CHAR(10),
 	Style			VARCHAR(20),
 	Paint_type		VARCHAR(20),
 	Drawn_on		VARCHAR(20),
 	PRIMARY KEY(ArtID),
     CONSTRAINT PFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
-			ON DELETE CASCADE		ON UPDATE CASCADE);
+			ON DELETE CASCADE	ON UPDATE CASCADE);
     
 INSERT INTO PAINTING (ArtID, Style, Paint_type, Drawn_on) 
 VALUES ('P-0000', 'Renaissance', 'Portrait', 'Cottonwood'),
@@ -143,7 +145,7 @@ VALUES ('P-0000', 'Renaissance', 'Portrait', 'Cottonwood'),
 
 DROP TABLE IF EXISTS STATUE;
 CREATE TABLE STATUE
-	(ArtID 			CHAR(10)		NOT NULL,
+	(ArtID 			CHAR(10),
 	Height_meters	FLOAT,
 	Weight_tonnes	FLOAT,			
 	Style			VARCHAR(20),
@@ -209,8 +211,20 @@ JOIN ARTIST ON ARTIST.AName = ART_OBJECT.Artist_Name;
 
 --  Query 6) 
 -- having issues with this query, getting an error code 1452 which has to do with FK constraints. Everything seems ok to me...
-
-
+/*
+UPDATE ART_OBJECT
+SET	YearCreated = 1942
+WHERE ArtID = 'P-0001';
+SELECT * 
+FROM ART_OBJECT;
+-- Above, update works functionally if confined to one table whereby the attr. changed is not present in any other table, but doesn't work if changing an FK linked to PK of other table or attr. present in other tables. 
+-- CASCADE trigger works for sure for DELETE FROM, but UPDATE there's clearly a child-parent constraint issue between FK/PK of differing tables.
+DELETE FROM ART_OBJECT
+WHERE Artist_Name = 'Leonardo Da Vinci';
+SELECT * FROM ART_OBJECT;
+SELECT * FROM ARTIST;
+*/
+-- Above, I ensured the ON DELETE SET NULL trigger works when deletion of an artist from child table does not affect the deletion of the PK of parent table. So, records in parent table that are linked by a PK/FK constraint from the record deleted in child table will not be affected.
 
 -- Query 7)
 /*
@@ -229,3 +243,4 @@ SELECT * FROM PERMANENT_COLLECTION;
 SELECT * FROM OTHER_COLLECTION;
 SELECT * FROM BORROWED_COLLECTION;
 */
+
