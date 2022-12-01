@@ -1,28 +1,78 @@
 import mysql.connector
+from mysql.connector import errorcode
 
 def admin_consol():
     pass
 def data_entry():
     pass
+    menu = "What would you like to do:\n1 - Perform a query\n2 - Insert new tuples to a table using a file\n3 - Insert new tuples to a table using prompts\n4 - Update a tuple\n5 - Delete a tuple\n6 - Exit"
+    selection = int(input(menu))
+    while (selection > 6 or selection < 1):
+        print("Invalid selection\n")
+        selection = int(input(menu))
+    if selection == 1:
+        query()
 
-def guest_view():
+def query():
+    table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
+    while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
+        print("Invalid selection\n")
+        table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
+    cur.execute("select * from", table_selection)
+    #Left off here 
+    # dope. maybe copy the code and paste into github, if not I can.
+    # I'll do that now
+    attribute_selection = input("Which attribute would you like to query? (Enter the attribute name or * to select all attributes):\n")
+    while(attribute_selection not in cur.column_names and attribute_selection != "*"):
+        print("Invalid selection\n")
+        attribute_selection = input("Which attribute would you like to query? (Enter the attribute name or * to select all attributes):\n")
+    if attribute_selection == "*":
+        print(cur.fetchall())
+    else:
+        cur.execute("select", attribute_selection, "from", table_selection)
+
+
+
+
+def guest_view(cur):
     print("What are you looking for:")
     print("1- Artist Information")
     print("2- Exhibit Information")
     print("3- Art Object information")
-    print("4- Pia")
-    selection = input()
+    print("4- Permanent collection of Art Objects")
+    print("5- Borrowed Collection of Art Objects")
 
+    selection = input()
+    if selection == 1:
+        user_input = int(input("Below, enter 1 if you would like to see the entire ARTIST table, otherwise enter 2 if you would like to see a column, row, or value within that table\n"))
+        if user_input == 1:
+            cursor = cnx.cursor()
+            query = ("SELECT * FROM ARTIST")
+            cursor.execute(query)             # will display the entire artist informatin table.
+        if user_input == 'N':
+            
+            
+    
+    '''
     if selection == '2':
         subselection = input('Please type 1 for Athletes or 2 for Coaches:\n')
         if subselection == '1':
             athlete_info(cur)
+    '''
 
 
 def athlete_info(cur):
 
+
+    test = "SELECT * FROM ART_OBJECT"
+    cur.execute(test)
+
+
+
+    '''
     instr=""
     join=""
+    
     att_selection = input("Do you want to see the Athlete name ? Y or N: ")
     if att_selection == 'Y':
         join = 'from athlete naturaljoin PARTICIPANT'
@@ -46,7 +96,10 @@ def athlete_info(cur):
         for val in row:
             print("{:<15s}".format(str(val)),end='')
         print()
-        
+    '''
+
+
+
 
 
 
@@ -56,12 +109,12 @@ if __name__ == "__main__":
     
     # Connect to server
     print("Welcome to the Arts Museum Database:")
-    print("In order to proceed please select your role from the list below:")
+    print("In order to proceed please select your role from the list below:\n")
     print("1-DB Admin")
     print("2-Data Entry")
     print("3-Browse as guest")
 
-    selection = input("please type 1, 2, or 3 to select your role:")
+    selection = int(input())
 
     if selection in ['1','2']:
         username= input("user name:")
@@ -70,11 +123,23 @@ if __name__ == "__main__":
         username="guest"   
         passcode=None
     
-    cnx = mysql.connector.connect(
-        host="127.0.0.1",
-        port=3306,
-        user=username,
-        password=passcode)    
+    try:
+        cnx = mysql.connector.connect(
+            host="127.0.0.1",
+            port=33060,
+            user=username,
+            password=passcode)    
+    
+    except mysql.connector.Error as err:
+        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print("Issue with username or password")
+        elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            print("Database does not exist")
+        else:
+            print(err)
+
+
+            
     # Get a cursor
     cur = cnx.cursor()
     # Execute a query
@@ -102,3 +167,5 @@ if __name__ == "__main__":
 
      # Close connection
     cnx.close()
+
+
