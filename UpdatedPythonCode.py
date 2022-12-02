@@ -104,8 +104,8 @@ def query(input_table, cur):
 
 def admin_consol():
     pass
-def data_entry():
-    pass
+        
+def data_entry(cur, cnx):
     menu = "What would you like to do:\n1 - Perform a query\n2 - Insert new tuples to a table using a file\n3 - Insert new tuples to a table using prompts\n4 - Update a tuple\n5 - Delete a tuple\n6 - Exit"
     selection = int(input(menu))
     while (selection > 6 or selection < 1):
@@ -113,7 +113,78 @@ def data_entry():
         selection = int(input(menu))
     if selection == 1:
         query(None)
+    elif selection == 2:
+        pass   
+    elif selection == 3:
+        pass
+    elif selection == 4:
+        update_tuple(cur)
+    elif selection == 5:    
+        delete_tuple(cur, cnx)
+    elif selection == 6:
+        return
 
+def update_tuple(cur, cnx):
+    print("Which table would you like to update? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
+    table_selection = input()
+    while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
+        print("Invalid selection\n")
+        table_selection = input("Which table would you like to update? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
+    
+    print("Which attribute would you like to update? (Enter the attribute name):\n")
+    update_attribute_selection = input()
+    cur.execute("select * from", table_selection)
+    while (update_attribute_selection not in cur.column_names):
+        print("Invalid selection\n")
+        update_attribute_selection = input("Which attribute would you like to update? (Enter the attribute name):\n")
+    
+    update_value_selection = input("What would you like to update the value to?\n")
+    
+    condition_attribute_selection = input("Which attribute would you like to use as a condition? (Press enter to have no condition[updates every {} value in {} to {}]):\n".format(update_attribute_selection, table_selection, update_value_selection))
+    while (condition_attribute_selection not in cur.column_names and condition_attribute_selection != ""):
+        print("Invalid selection\n")
+        condition_attribute_selection = input("Which attribute would you like to use as a condition? (Press enter to have no condition[updates every {} value in {} to {}]):\n".format(update_attribute_selection, table_selection, update_value_selection))
+    
+    if condition_attribute_selection == "":
+        cur.execute("update", table_selection, "set", update_attribute_selection, "=", update_value_selection)
+    
+    else:
+        condition_value_selection = input("What would you like the condition value to be?\n")
+        cur.execute("update", table_selection, "set", update_attribute_selection, "=", update_value_selection, "where", condition_attribute_selection, "=", condition_value_selection)
+    
+    cnx.commit()
+    if cur.rowcount == 0:
+        print("No tuples were updated")
+    else:
+        print("Updated {} tuples".format(cur.rowcount)) 
+
+def delete_tuple(cur, cnx):
+    print('Which table would you like to delete a tuple from? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n')
+    table_selection = input()
+    while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
+        print("Invalid selection\n")
+        table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
+   
+    print('Which attribute would you like to use to delete a tuple? (or press enter to delete all contents of table):\n')
+    attribute_selection = input()
+    cur.execute("select * from", table_selection)
+    while (attribute_selection not in cur.column_names and attribute_selection != ""):
+        print("Invalid selection\n")
+        attribute_selection = input("Which attribute would you like to use to delete a tuple? (or press enter to delete all contents of table):\n")
+    
+    if attribute_selection == "":
+        cur.execute("delete from", table_selection)
+    
+    else:
+        print('Enter a value condition to use to delete a tuple(s):\n')
+        value_selection = input()
+        cur.execute("delete from", table_selection, "where", attribute_selection, "=", value_selection)
+    
+    cnx.commit()
+    if(cur.rowcount == 0):
+        print("No tuples were deleted\n")
+    else:
+        print(cur.rowcount, "record(s) deleted")
 
 def guest_view():
     print("What are you looking for:\n")
