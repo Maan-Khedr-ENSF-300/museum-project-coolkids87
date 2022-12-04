@@ -250,11 +250,9 @@ SELECT * FROM PERMANENT_COLLECTION;
 SELECT * FROM OTHER_COLLECTION;
 SELECT * FROM BORROWED_COLLECTION;
 */
-
 DROP ROLE IF EXISTS dguest@localhost;
 DROP ROLE IF EXISTS dadmin@localhost;
 DROP ROLE IF EXISTS dinsert@localhost;
-#DROP ROLE IF EXISTS readwrite@localhost;
 CREATE ROLE dguest@localhost;
 GRANT SELECT ON ART_MUSEUM. * TO dguest@localhost;
 CREATE ROLE dinsert@localhost;
@@ -266,7 +264,7 @@ DROP USER IF EXISTS admin@localhost;
 DROP USER IF EXISTS insert_user@localhost;
 CREATE USER admin@localhost IDENTIFIED WITH mysql_native_password BY 'password';
 CREATE USER guest@localhost;
-CREATE USER insert_user@localhost;
+CREATE USER insert_user@localhost IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT dadmin@localhost TO admin@localhost;
 GRANT dguest@localhost TO guest@localhost;
 GRANT dinsert@localhost TO insert_user@localhost;
