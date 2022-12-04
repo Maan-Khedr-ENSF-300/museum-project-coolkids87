@@ -3,7 +3,22 @@ from mysql.connector import errorcode
 import os
 
 
+
+# q: can you handle documentation for this function? like the promises it makes and what it does?
+# a: sure 
 def attribute_display(input_table, cur):
+    """
+    Input: 
+        The table that the user wants to view the attributes 
+        The cursor object.
+
+    Output:
+      Displays all the attributes of that table.
+
+    Features:
+      Displays all the attributes that the user can view from the table.
+      If the user inputs an attribute that does not belong to the table, the program will ask the user to input an attribute that does belong to the table.
+    """
     instr = ("select * from", input_table)
     cur.execute(instr)
     print("The attributes that you can view from this table are:\n")
@@ -25,11 +40,28 @@ def attribute_display(input_table, cur):
 
 
 def row_display(input_table,cur):
+    """
+    Input:
+        The table that the user wants to view the rows
+        The cursor object.
+    
+    Output:
+        Displays all the rows of that table.
+
+    Features:
+        Asks the user how many rows they would like to view.
+        Prompts the amount of rows the user can view.
+        If the user inputs a number that is greater than the number of rows in the table, 
+            the program will ask the user to input a number that is less than or equal to the number of rows in the table.
+        If the user inputs a number that is less than the number of rows in the table,
+            the program will ask the user to input the row numbers that they would like to view. (inputing 0 is an option to not view any rows)
+    """
     row_count = 0
     cur.execute("select * from",input_table)
     whole = cur.fetchall()
     for row in whole:
         row_count += 1
+    print("There are", row_count, "rows in this table\n")
     print("How many rows would you like to display? \n")
     row_input1 = int(input())
     
@@ -47,8 +79,6 @@ def row_display(input_table,cur):
             for x in range(len(whole[i])):
                 print(f'{whole[i][x]: <20}')
             print()
-
-
 
     if row_input1 < row_count:
         print("Which rows specifically would you like to see?\n")
@@ -74,20 +104,6 @@ def row_display(input_table,cur):
 
 
 def value_display(input_table, cur):
-    instr = ("select * from", input_table)
-    cur.execute(instr)
-    print("The values that you can view from this table are:\n")
-    for i in range(len(cur.column_names)):  
-        print((cur.column_names)[i]," ")
-    print("Please input below the values you would like to view from this table:\n")
-    input3 = input()
-    if input3 not in cur.column_names:
-        print("Please input values that belong to the table like the one's listed above:\n")
-        value_display(input_table)
-    for i in input3:
-        cur.execute("select", i, "from", input_table)
-        print("Here are all the records for that value(s) you wanted to view:\n")
-        print(cur.fetchall())
     return
 
 
@@ -128,15 +144,15 @@ def query(input_table, cur):
     #Left off here 
     # dope. maybe copy the code and paste into github, if not I can.
     # I'll do that now
-    #attribute_selection = input("Which attribute would you like to query? (Enter the attribute name or * to select all attributes):\n")
+    # attribute_selection = input("Which attribute would you like to query? (Enter the attribute name or * to select all attributes):\n")
     
-    #while(attribute_selection not in cur.column_names and attribute_selection != "*"):
+    # while(attribute_selection not in cur.column_names and attribute_selection != "*"):
     #    print("Invalid selection\n")
-   #     attribute_selection = input("Which attribute would you like to query? (Enter the attribute name or * to select all attributes):\n")
-    #if attribute_selection == "*":
-   #     print(cur.fetchall())
-   # else:
-   #     cur.execute("select", attribute_selection, "from", table_selection)
+    #     attribute_selection = input("Which attribute would you like to query? (Enter the attribute name or * to select all attributes):\n")
+    # if attribute_selection == "*":
+    #     print(cur.fetchall())
+    # else:
+    #     cur.execute("select", attribute_selection, "from", table_selection)
 
 
 def admin_consol(cur, cnx):
