@@ -16,10 +16,10 @@ CREATE TABLE ARTIST
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied)
 VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
 ('Imogen Cunningham', '20th Century', 'Photographer', 'Black and White',  'USA', '1883-04-12', '1976-06-23'),
-('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'A French sculptor and painter. He is best known for designing Liberty Enlightening the World, commonly known as the Statue of Liberty.', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
-('Lewis Hine', 'Industrial Revolution', 'Captured the negative front of human nature through grotesque photos of gruelling physically over physical labor' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
-('Johannes Vermeer', 'Dutch Golden Age', 'Artist that primarily painted interior scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
-('Paul Landowski', 'Industrial revolution', 'Famous french sculptor that constructed the statue of Jesus Christ in Brazil', 'Realistic', 'France', '1875-06-01', '1961-03-31');
+('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'Famous French sculptor that designed the statue of liberty', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
+('Lewis Hine', 'Industrial Revolution', 'Captured the negative front of human nature' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
+('Johannes Vermeer', 'Dutch Golden Age', 'Artist that painted scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
+('Paul Landowski', 'Industrial revolution', 'Famous french sculptor known for statue of Jesus Christ', 'Realistic', 'France', '1875-06-01', '1961-03-31');
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn) VALUES
 ('Nick Ut', 'Social/tech transformation age', 'Photographer that captured how harsh the human condition can be in certain war climates', 'Black and white', 'Vietnam', '1951-03-29');
 
@@ -57,11 +57,11 @@ VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'L
 ('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian');
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
-('The Terror of War', '1972', 'Photograph depicting the brutality of war and the effects it has on individuals', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
-('Cotton Mill Girl', '1908', 'Photograph depicting the reality of life for working/middle class children during the industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
-('Girl with a Pearl Earring','1665', 'Photo displaying a girl with an earring' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer'),
-('Statue of Liberty', '1876', 'Well-known statue symbolizing freedom and independence', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi'),
-('Christ the Redeemer', '1931', 'Famous statue of Jesus Christ located in Rio De Janerio, Brazil', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
+('The Terror of War', '1972', 'Photograph depicting war', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
+('Cotton Mill Girl', '1908', 'Photograph depicting industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
+('Girl with a Pearl Earring','1665', 'Photo showing young girl' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer'),
+('Statue of Liberty', '1876', 'Well-known statue', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi'),
+('Christ the Redeemer', '1931', 'Famous statue of Jesus Christ', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
 
 DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
@@ -264,7 +264,7 @@ DROP USER IF EXISTS guest@localhost;
 DROP USER IF EXISTS admin@localhost;
 DROP USER IF EXISTS insert_user@localhost;
 CREATE USER admin@localhost IDENTIFIED WITH mysql_native_password BY 'password';
-CREATE USER guest@localhost;
+CREATE USER guest@localhost IDENTIFIED WITH mysql_native_password BY '';
 CREATE USER insert_user@localhost IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT dadmin@localhost TO admin@localhost;
 GRANT dguest@localhost TO guest@localhost;
@@ -272,3 +272,6 @@ GRANT dinsert@localhost TO insert_user@localhost;
 SET DEFAULT ROLE ALL TO admin@localhost;
 SET DEFAULT ROLE ALL TO guest@localhost;
 SET DEFAULT ROLE ALL TO insert_user@localhost;
+ALTER USER 'root'@'localhost' identified with mysql_native_password by 'password';
+ALTER USER 'guest'@'localhost' identified with mysql_native_password by '';
+FLUSH privileges;
