@@ -2,10 +2,6 @@ import mysql.connector
 from mysql.connector import errorcode
 import os
 
-
-
-# q: can you handle documentation for this function? like the promises it makes and what it does?
-# a: sure 
 def attribute_display(input_table, cur):
     """
     Input: 
