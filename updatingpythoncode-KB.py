@@ -310,6 +310,8 @@ def delete_tuple(cur, cnx):
     while (attribute_selection not in cur.column_names and attribute_selection != ""):
         print("Invalid selection\n")
         attribute_selection = input('Which attribute would you like to use to delete a tuple from {}?\n(or press enter to delete all contents of table):\n'.format(cur.column_names))
+    
+    cur.fetchall()
     if attribute_selection == "":
         try:
             cur.execute("DELETE FROM {}".format(table_selection))
