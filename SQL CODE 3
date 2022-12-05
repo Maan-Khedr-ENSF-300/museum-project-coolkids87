@@ -7,7 +7,6 @@ USE Art_museum;
 
 -- Query 1
 -- Create a table called ARTIST with the following attributes: AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied.
-
 DROP TABLE IF EXISTS ARTIST;
 CREATE TABLE ARTIST
 	(AName			VARCHAR(500)		NOT NULL,
@@ -24,18 +23,18 @@ CREATE TABLE ARTIST
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied)
 VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
 ('Imogen Cunningham', '20th Century', 'Photographer', 'Black and White',  'USA', '1883-04-12', '1976-06-23'),
-('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'A French sculptor and painter. He is best known for designing Liberty Enlightening the World, commonly known as the Statue of Liberty.', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
-('Lewis Hine', 'Industrial Revolution', 'Captured the negative front of human nature through grotesque photos of gruelling physically over physical labor' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
-('Johannes Vermeer', 'Dutch Golden Age', 'Artist that primarily painted interior scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
-('Paul Landowski', 'Industrial revolution', 'Famous french sculptor that constructed the statue of Jesus Christ in Brazil', 'Realistic', 'France', '1875-06-01', '1961-03-31');
+('Frédéric Auguste Bartholdi', 'Industrial Revolution/Gilded Age', 'Famous French sculptor that designed the statue of liberty', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
+('Lewis Hine', 'Industrial Revolution', 'Captured the negative front of human nature' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
+('Johannes Vermeer', 'Dutch Golden Age', 'Artist that painted scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
+('Paul Landowski', 'Industrial revolution', 'Famous french sculptor known for statue of Jesus Christ', 'Realistic', 'France', '1875-06-01', '1961-03-31');
 
 -- Query 3
--- Create a table called EXHIBITION with the following attributes: EName, Start_date, End_date.
+-- Insert data into EXHIBITION without the date of death.
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn) VALUES
 ('Nick Ut', 'Social/tech transformation age', 'Photographer that captured how harsh the human condition can be in certain war climates', 'Black and white', 'Vietnam', '1951-03-29');
 
 -- Query 4
--- Insert the following data into the EXHIBITION table:
+-- Create a table called EXHIBITION with the following attributes: EName, Start_date, End_date
 DROP TABLE IF EXISTS EXHIBITION;
 CREATE TABLE EXHIBITION
 	(EName    		VARCHAR(50)		NOT NULL,
@@ -76,7 +75,7 @@ VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'L
 ('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian');
 
 -- Query 8
--- Create a table called ART_OBJECT with the following attributes: Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name.
+-- Insert the following data into the ART_OBJECT table without the exhibition name:
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
 ('The Terror of War', '1972', 'Photograph depicting the brutality of war and the effects it has on individuals', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
 ('Cotton Mill Girl', '1908', 'Photograph depicting the reality of life for working/middle class children during the industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
@@ -126,7 +125,7 @@ independent contemporary art museum located on the campus of the University of C
 ('National Park Service', '1849 C Street, Washington, D.C. 20240, United States', 'The National Park Service is a United States federal agency that manages national parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
 
 -- Query 13
--- Create a table called BORROWED_COLLECTION with the following attributes: ArtID, collection_name, Date_borrowed, Date_returned.
+-- Insert the following data into the OTHER_COLLECTION table without the contact information (address, contact phone, and contact name):
 INSERT INTO OTHER_COLLECTION (OName, Descrip, Otype) VALUES
 ('National Historic Heritage of Brazil', 'Located in Brazil and regulates all historical artifacts and monuments throughout the country', 'Government');
 
