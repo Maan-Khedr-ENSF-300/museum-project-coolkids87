@@ -2,6 +2,9 @@ DROP DATABASE IF EXISTS Art_museum;
 CREATE DATABASE Art_museum;
 USE Art_museum;
 
+-- This SQL code is contains most the data. (The Database SQL code)
+
+
 -- Query 1
 -- Create a table called ARTIST with the following attributes: AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied.
 
@@ -17,7 +20,7 @@ CREATE TABLE ARTIST
    	PRIMARY KEY(AName));
 	
 -- Query 2
--- Insert the following data into the ARTIST table:
+-- Insert the following data into the ARTIST table; AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied.
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied)
 VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
 ('Imogen Cunningham', '20th Century', 'Photographer', 'Black and White',  'USA', '1883-04-12', '1976-06-23'),

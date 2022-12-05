@@ -50,15 +50,15 @@ def guest_view(cur):
             query = ("SELECT * FROM ARTIST")
             cursor.execute(query)             # will display the entire artist informatin table.
         if user_input == 'N':
-            
+            pass
             
     
-'''
-if selection == '2':
-    subselection = input('Please type 1 for Athletes or 2 for Coaches:\n')
-    if subselection == '1':
-        athlete_info(cur)
-'''
+
+# if selection == '2':
+#     subselection = input('Please type 1 for Athletes or 2 for Coaches:\n')
+#     if subselection == '1':
+#         athlete_info(cur)
+
 
 
 def athlete_info(cur):
