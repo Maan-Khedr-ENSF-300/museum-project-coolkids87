@@ -34,7 +34,7 @@ def attribute_display(input_table, cur, cnx):
         for k in range(len(all_recs[j])):
             print(f'{all_recs[j][k]:45}', end = ' ')
         print()
-    return
+    guest_view(cur, cnx)
 
 def row_display(input_table, cur, cnx):
     cursor = cnx.cursor(buffered=True)
@@ -67,7 +67,6 @@ def row_display(input_table, cur, cnx):
         print("Which rows specifically would you like to see?\n")
         print("Please input the row numbers starting from 1 up to the max row number seperated by whitespace of which you would like to see\n")
         row_input3 = (input())
-        print(row_input3)
         empty_list = []
         for i in row_input3:
             empty_list.append(i)
@@ -104,16 +103,23 @@ def row_display(input_table, cur, cnx):
 
         cursor.execute("SELECT * FROM {}".format(input_table))
         rows = cursor.fetchall()
+        print("\nResult\n")
+        for i in range(len(cursor.column_names)):
+            print(f'{cursor.column_names[i]:30}', end = ' ')
+        print()
+        print('-' * len(cursor.column_names) * 25)
         size = len(rows)
         for i in range(size):
-            if i == (j for j in empty_list):
+            if str(i) in empty_list:
                 for x in range(len(rows[i])):
-                    print(f'{rows[i][x]}:35', end = ' ')
+                    print(f'{rows[i][x]:30}', end = ' ')
                 print()
-    return
+    print()
+    guest_view(cur, cnx)
 
 
-def value_display(input_table, cur):
+def value_display(input_table, cur, cnx):
+    
     """
     Input:
         The table that the user wants to view the values.
@@ -126,21 +132,62 @@ def value_display(input_table, cur):
         Displays all the values that the user can view from the table.
         If the user inputs a value that does not belong to the table, the program will ask the user to input a value that does belong to the table.
     """
-    instr = ("select * from", input_table)
-    cur.execute(instr)
-    print("The values that you can view from this table are:\n")
-    for i in range(len(cur.column_names)):  
-        print((cur.column_names)[i]," ")
-    print("Please input below the values you would like to view from this table:\n")
-    input3 = input()
-    if input3 not in cur.column_names:
-        print("Please input values that belong to the table like the one's listed above:\n")
-        value_display(input_table)
-    for i in input3:
-        cur.execute("select", i, "from", input_table)
-        print("Here are all the records for that value(s) you wanted to view:\n")
-        print(cur.fetchall())
-    return
+    cursor = cnx.cursor(buffered=True)
+    instr = ("SELECT * FROM {}".format(input_table))
+    cursor.execute(instr)
+    at_names = cursor.column_names
+    print("The attributes/columns that you can view from this table are: \n")
+    ticker = 1
+    for i in range(len(at_names)):  
+        print('{}) {}'.format(ticker,(at_names[i]),end = " "))
+        ticker += 1
+    print("\nPlease input below the attributes you would like to view from this table:\n")
+    at_input = input()
+    at_inlist = at_input.split()
+    inp_length = len(at_inlist)
+    atr_str = ''
+    count = 0
+    for i in at_inlist:
+        if count < inp_length - 1:
+            atr_str += i + ', '
+        else:
+            atr_str += i + ' '
+        count += 1
+    print(atr_str)
+    row_count = 0
+    whole = cursor.fetchall()
+    row_count = len(whole)
+    print("How many rows would you like to display? \n")
+    row_input1 = input()
+    if row_input1 > str(row_count):
+        print("Sorry, but thats an invalid input as not that many rows exist in that table\n")
+        print("Please enter the number of rows you would like displayed:\n")
+        row_input2 = int(input())
+        if row_input2 > row_count:
+            print("Invalid input. Goodbye")
+            exit()
+    if row_input1 < str(row_count):
+        print("Which rows specifically would you like to see?\n")
+        print("Please input the row numbers starting from 1 up to the max row number seperated by whitespace of which you would like to see\n")
+        row_input3 = input()
+        empty_list2 = []
+        for i in row_input3:
+            empty_list2.append(i)
+        cursor.execute("SELECT {} FROM {}".format(atr_str, input_table))
+        rows = cursor.fetchall()
+        print("\nResult\n")
+        for i in range(len(cursor.column_names)):
+            print(f'{cursor.column_names[i]:30}', end = ' ')
+        print()
+        print('-' * len(cursor.column_names) * 25)
+        size = len(rows)
+        for i in range(size):
+            if str(i) in empty_list2:
+                for x in range(len(rows[i])):
+                    print(f'{rows[i][x]:30}', end = ' ')
+                print()
+    print()
+    guest_view(cur, cnx)
 
 
 # Below function will handle printing/ querying entire tables for non-admin users.
@@ -183,7 +230,7 @@ def query(input_table, cur, cnx):
         elif user_input == 2:
             row_display(input_table,cur,cnx)
         elif user_input == 3:
-            value_display(input_table)
+            value_display(input_table,cur,cnx)
 
 
 def admin_consol(cur, cnx):
@@ -357,12 +404,13 @@ def guest_view(cur, cnx):
     print("7- Painting Information")
     print("8- Statue Information")
     print("9- Other Types of Art")
-    print("Please input a number corresponding to a table that you would like to view: ")
+    print("10- Exit Application")
+    print("\nPlease input a number corresponding to a table that you would like to view:\n")
     # From here, depending on what the user inputs they will then be prompted if they want to see a specific
     # attribute from the table or if they want to execute a particular join to merely see attributes belonging to two seperate tables.
     table = ''
     selection = int(input())
-    if selection not in range(1, 10):
+    if selection not in range(1, 11):
         guest_view()
     else:
         if selection == 1:
@@ -383,6 +431,10 @@ def guest_view(cur, cnx):
             table = 'STATUE'
         elif selection == 9:
             table = 'OTHER'
+        elif selection == 10:
+            print("\nThank you for using this application!")
+            exit()
+
         
     if table != '' or table != None:
         query(table, cur, cnx)
