@@ -36,81 +36,85 @@ def attribute_display(input_table, cur, cnx):
         print()
     return
 
-def row_display(input_table,cur):
+def row_display(input_table, cur, cnx):
+    cursor = cnx.cursor(buffered=True)
     row_count = 0
-    cur.execute("select * from {}".format(input_table))
-    whole = cur.fetchall()
-    for row in whole:
-        row_count += 1
+    cursor.execute("SELECT * FROM {}".format(input_table))
+    at_names = cursor.column_names
+    whole = cursor.fetchall()
+    row_count = len(whole)
     print("How many rows would you like to display? \n")
     row_input1 = int(input())
-    if row_input1 > int(row_count):
+    if row_input1 > row_count:
         print("Sorry, but thats an invalid input as not that many rows exist in that table\n")
         print("Please enter the number of rows you would like displayed:\n")
         row_input2 = int(input())
         if row_input2 > row_count:
-            print("invalid input")
+            print("Invalid input. Goodbye")
             exit()
+    # everything up to here is good.
+    
     if row_input1 == int(row_count):
         size  = len(whole)
         for i in range(size):
             for x in range(len(whole[i])):
-                print(f'{whole[i][x]: <20}')
+                print(f'{whole[i][x]: <20}', end = ' ')
             print()
+
+    # everything up to here is good.
+    
     if row_input1 < int(row_count):
         print("Which rows specifically would you like to see?\n")
         print("Please input the row numbers starting from 1 up to the max row number seperated by whitespace of which you would like to see\n")
-        row_input3 = input()
+        row_input3 = (input())
+        print(row_input3)
         empty_list = []
         for i in row_input3:
             empty_list.append(i)
-        count = 0
+        
+        '''
+        row_str = ''
+        counter = 0
         for i in empty_list:
-            if count > row_count:
+            if counter < len(empty_list) -1:
+                row_str += i + ', '
+            else:
+                row_str += i
+            counter += 1
+        print(row_str)
+        '''
+
+        # below loop checks over 
+        '''
+        for i in row_input3:
+            if (i > row_count or i < 0):
                 print("At least one invalid input is present\n")
                 exit()
             count += 1
+        '''
+
+        # below loop checks if user inputted more rows than is in the table
         if len(empty_list) > row_count:
             print("You entered more rows than is present in the table\n")
             exit()
+
         if row_input3 == None:
             print("You dont want to see any rows\n")
             return
-        
-        for i in empty_list:
-            cur.execute("select row_number() over() AS num_row, ArtID, Type, Style FROM {}".format(input_table))
-            print(cur.fetchall(), end = '\n')
+
+        cursor.execute("SELECT * FROM {}".format(input_table))
+        rows = cursor.fetchall()
+        size = len(rows)
+        for i in range(size):
+            if i == (j for j in empty_list):
+                for x in range(len(rows[i])):
+                    print(f'{rows[i][x]}:35', end = ' ')
+                print()
     return
 
 
 def value_display(input_table, cur):
-    """
-    Input:
-        The table that the user wants to view the values.
-        The cursor object.
-
-    Output:
-        Displays all the values of that table.
-    
-    Features:
-        Displays all the values that the user can view from the table.
-        If the user inputs a value that does not belong to the table, the program will ask the user to input a value that does belong to the table.
-    """
-    instr = ("select * from", input_table)
-    cur.execute(instr)
-    print("The values that you can view from this table are:\n")
-    for i in range(len(cur.column_names)):  
-        print((cur.column_names)[i]," ")
-    print("Please input below the values you would like to view from this table:\n")
-    input3 = input()
-    if input3 not in cur.column_names:
-        print("Please input values that belong to the table like the one's listed above:\n")
-        value_display(input_table)
-    for i in input3:
-        cur.execute("select", i, "from", input_table)
-        print("Here are all the records for that value(s) you wanted to view:\n")
-        print(cur.fetchall())
-    return
+    pass
 
 
 # Below function will handle printing/ querying entire tables for non-admin users.
@@ -151,7 +155,7 @@ def query(input_table, cur, cnx):
         if user_input == 1:
             attribute_display(input_table, cur, cnx)
         elif user_input == 2:
-            row_display(input_table,cur)
+            row_display(input_table,cur,cnx)
         elif user_input == 3:
             value_display(input_table)
 
@@ -291,6 +295,7 @@ def update_tuple(cur, cnx):
         print("Updated {} tuples".format(cur.rowcount)) 
 
 def delete_tuple(cur, cnx):
+    cursor = cnx.cursor(buffered=True)
     print('Which table would you like to delete a tuple from? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n')
     table_selection = input()
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
@@ -299,21 +304,21 @@ def delete_tuple(cur, cnx):
     #good
     print('Which attribute would you like to use to delete a tuple? (or press enter to delete all contents of table):\n')
     attribute_selection = input()
-    cur.execute("select * from {}".format(table_selection))
-    while (attribute_selection not in cur.column_names and attribute_selection != ""):
+    cursor.execute("SELECT * FROM {}".format(table_selection))
+    while (attribute_selection not in cursor.column_names and attribute_selection != ""):
         print("Invalid selection\n")
         attribute_selection = input("Which attribute would you like to use to delete a tuple? (or press enter to delete all contents of table):\n")
     if attribute_selection == "":
-        cur.execute("DELETE FROM {}".format(table_selection))
+        cursor.execute("DELETE FROM {}".format(table_selection))
     else:
         print('Enter a value condition to use to delete a tuple(s):\n')
         value_selection = input()
-        cur.execute("DELETE FROM {} WHERE {} = {}".format(table_selection, attribute_selection, value_selection))
+        cursor.execute("DELETE FROM {} WHERE {} = {}".format(table_selection, attribute_selection, value_selection))
     cnx.commit()
     if(cur.rowcount == 0):
         print("No tuples were deleted\n")
     else:
-        print(cur.rowcount, "record(s) deleted")
+        print(cursor.rowcount, "record(s) deleted")
 
 def guest_view(cur, cnx):
     print("What are you looking for:\n")
