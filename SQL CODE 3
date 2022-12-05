@@ -2,6 +2,9 @@ DROP DATABASE IF EXISTS Art_museum;
 CREATE DATABASE Art_museum;
 USE Art_museum;
 
+-- Query 1
+-- Create a table called ARTIST with the following attributes: AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied.
+
 DROP TABLE IF EXISTS ARTIST;
 CREATE TABLE ARTIST
 	(AName			VARCHAR(500)		NOT NULL,
@@ -13,6 +16,8 @@ CREATE TABLE ARTIST
    	DateDied		DATE,
    	PRIMARY KEY(AName));
 	
+-- Query 2
+-- Insert the following data into the ARTIST table:
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied)
 VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
 ('Imogen Cunningham', '20th Century', 'Photographer', 'Black and White',  'USA', '1883-04-12', '1976-06-23'),
@@ -20,9 +25,14 @@ VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor',
 ('Lewis Hine', 'Industrial Revolution', 'Captured the negative front of human nature through grotesque photos of gruelling physically over physical labor' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
 ('Johannes Vermeer', 'Dutch Golden Age', 'Artist that primarily painted interior scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
 ('Paul Landowski', 'Industrial revolution', 'Famous french sculptor that constructed the statue of Jesus Christ in Brazil', 'Realistic', 'France', '1875-06-01', '1961-03-31');
+
+-- Query 3
+-- Create a table called EXHIBITION with the following attributes: EName, Start_date, End_date.
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn) VALUES
 ('Nick Ut', 'Social/tech transformation age', 'Photographer that captured how harsh the human condition can be in certain war climates', 'Black and white', 'Vietnam', '1951-03-29');
 
+-- Query 4
+-- Insert the following data into the EXHIBITION table:
 DROP TABLE IF EXISTS EXHIBITION;
 CREATE TABLE EXHIBITION
 	(EName    		VARCHAR(50)		NOT NULL,
@@ -30,10 +40,14 @@ CREATE TABLE EXHIBITION
 	End_date		DATE,
 	PRIMARY KEY(EName));
     
+-- Query 5
+-- Insert the following data into the EXHIBITION table:
 INSERT INTO EXHIBITION(EName, Start_date, End_date)
 VALUES ('Yves Saint Laurent aux Musées', '2023-01-29', '2023-05-15'), 
 ('150 years of Mondrian', '2022-10-29', '2023-02-10');
 
+-- Query 6
+-- Create a table called ART_OBJECT with the following attributes: Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName.
 DROP TABLE IF EXISTS ART_OBJECT;
 CREATE TABLE ART_OBJECT 
 	(Title			VARCHAR(50)			NOT NULL,
@@ -52,10 +66,14 @@ CREATE TABLE ART_OBJECT
 		FOREIGN KEY(ExName) REFERENCES EXHIBITION(EName)
 			ON DELETE SET NULL ON UPDATE CASCADE);
 
+-- Query 7
+-- Insert the following data into the ART_OBJECT table:
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName)
 VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'Yves Saint Laurent aux Musées'),
 ('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian');
 
+-- Query 8
+-- Create a table called ART_OBJECT with the following attributes: Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name.
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
 ('The Terror of War', '1972', 'Photograph depicting the brutality of war and the effects it has on individuals', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
 ('Cotton Mill Girl', '1908', 'Photograph depicting the reality of life for working/middle class children during the industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
@@ -63,6 +81,8 @@ INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, Art
 ('Statue of Liberty', '1876', 'Well-known statue symbolizing freedom and independence', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi'),
 ('Christ the Redeemer', '1931', 'Famous statue of Jesus Christ located in Rio De Janerio, Brazil', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
 
+-- Query 9
+-- Create a table called PERMANENT_COLLECTION with the following attributes: ArtID, DateAcquired, Status, Cost.
 DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
 	(ArtID			CHAR(10),
@@ -74,12 +94,16 @@ CREATE TABLE PERMANENT_COLLECTION
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
             
+-- Query 10
+-- Insert the following data into the PERMANENT_COLLECTION table:
 INSERT INTO PERMANENT_COLLECTION (ArtID, DateAcquired, Status, Cost)
 VALUES ('O-0001', '2021-01-01', 'On display', '22000'),
 ('O-0002', '2021-06-05', 'On display', '50000'),
 ('O-0003', '2008-05-23', 'On display', '100000'),
 ('P-0001', '2000-02-01', 'Locked up', '500000');
 
+-- Query 11
+-- Create a table called OTHER_COLLECTION with the following attributes: OName, Address, Descrip, Otype, ContactPhone, ContactName.
 DROP TABLE IF EXISTS OTHER_COLLECTION;
 CREATE TABLE OTHER_COLLECTION
 	(OName			VARCHAR(100)			NOT NULL,
@@ -90,16 +114,21 @@ CREATE TABLE OTHER_COLLECTION
     ContactName		VARCHAR(20)			UNIQUE,
     PRIMARY KEY(OName));
 
+-- Query 12
+-- Insert the following data into the OTHER_COLLECTION table:
 INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName)
 VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL 60637, United States', 'The Renaissance Society, founded in 1915, is a leading 
 independent contemporary art museum located on the campus of the University of Chicago, with a focus on the commissioning and production of new works by international artists', 
 'Museum', 17737028670, 'Pierre Sondeljker'),
 ('National Park Service', '1849 C Street, Washington, D.C. 20240, United States', 'The National Park Service is a United States federal agency that manages national parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
 
+-- Query 13
+-- Create a table called BORROWED_COLLECTION with the following attributes: ArtID, collection_name, Date_borrowed, Date_returned.
 INSERT INTO OTHER_COLLECTION (OName, Descrip, Otype) VALUES
 ('National Historic Heritage of Brazil', 'Located in Brazil and regulates all historical artifacts and monuments throughout the country', 'Government');
 
-
+-- Query 14
+-- Insert the following data into the BORROWED_COLLECTION table: ArtID, collection_name, Date_borrowed, Date_returned.
 DROP TABLE IF EXISTS BORROWED_COLLECTION;
 CREATE TABLE BORROWED_COLLECTION 
 	(ArtID				CHAR(10),
@@ -114,11 +143,15 @@ CREATE TABLE BORROWED_COLLECTION
 		FOREIGN KEY(collection_name) REFERENCES OTHER_COLLECTION(OName)
 			ON DELETE SET NULL			ON UPDATE CASCADE);
 
+-- Query 15
+-- Insert the following data into the BORROWED_COLLECTION table: ArtID, collection_name, Date_borrowed, Date_returned.
 INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
 VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
 ('L-0001', 'National Park Service', '2022-11-01', '2023-05-20'),
 ('L-0002', 'National Historic Heritage of Brazil', '2022-10-20', '2022-11-20');
 
+-- Query 16
+-- Create a table called OTHER with the following attributes: ArtID, Type, Style.
 DROP TABLE IF EXISTS OTHER;
 CREATE TABLE OTHER 
 	(ArtID 			CHAR(10),
@@ -129,11 +162,15 @@ CREATE TABLE OTHER
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
             
+-- Query 17
+-- Insert the following data into the OTHER table: ArtID, Type, Style.
 INSERT INTO OTHER (ArtID, Type, Style) 
 VALUES ('O-0001', 'Photograph', 'Floral'),
 ('O-0002', 'Photograph', 'War'),
 ('O-0003', 'Photograph', 'Social Change');
 
+-- Query 18
+-- Create a table called PAINTING with the following attributes: ArtID, Style, Paint_type, Drawn_on.
 DROP TABLE IF EXISTS PAINTING;
 CREATE TABLE PAINTING 
 	(ArtID 			CHAR(10),
@@ -145,10 +182,14 @@ CREATE TABLE PAINTING
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE	ON UPDATE CASCADE);
     
+-- Query 19
+-- Insert the following data into the PAINTING table: ArtID, Style, Paint_type, Drawn_on.
 INSERT INTO PAINTING (ArtID, Style, Paint_type, Drawn_on) 
 VALUES ('P-0000', 'Renaissance', 'Portrait', 'Cottonwood'),
 ('P-0001', 'Dutch Golden Age', 'Portrait', 'Canvas');
 
+-- Query 20
+-- Create a table called SCULPTURE with the following attributes: ArtID, Height_meters, Weight_tonnes, Style, Material_s.
 DROP TABLE IF EXISTS STATUE;
 CREATE TABLE STATUE
 	(ArtID 			CHAR(10),
@@ -163,6 +204,8 @@ CREATE TABLE STATUE
  INSERT INTO STATUE (ArtID, Height_meters, Weight_tonnes, Style, Material_s) 
  VALUES ('L-0001', '46.0', '204.1', 'neoclassical', 'Copper, Steel, Gold, Cast Iron'),
  ('L-0002', '28.0', '635.0', 'catholic', 'Cement');
+
+
 
 -- SQL Queries
 -- Query 1)
@@ -251,6 +294,7 @@ SELECT * FROM OTHER_COLLECTION;
 SELECT * FROM BORROWED_COLLECTION;
 */
 
+-- Create roles and users (guest, insert_user, admin)
 DROP ROLE IF EXISTS dguest@localhost;
 DROP ROLE IF EXISTS dadmin@localhost;
 DROP ROLE IF EXISTS dinsert@localhost;

@@ -19,7 +19,7 @@ def query():
         print("Invalid selection\n")
         table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
     cur.execute("select * from", table_selection)
-    #Left off here 
+    # Left off here 
     # dope. maybe copy the code and paste into github, if not I can.
     # I'll do that now
     attribute_selection = input("Which attribute would you like to query? (Enter the attribute name or * to select all attributes):\n")
@@ -53,12 +53,12 @@ def guest_view(cur):
             
             
     
-    '''
-    if selection == '2':
-        subselection = input('Please type 1 for Athletes or 2 for Coaches:\n')
-        if subselection == '1':
-            athlete_info(cur)
-    '''
+'''
+if selection == '2':
+    subselection = input('Please type 1 for Athletes or 2 for Coaches:\n')
+    if subselection == '1':
+        athlete_info(cur)
+'''
 
 
 def athlete_info(cur):
