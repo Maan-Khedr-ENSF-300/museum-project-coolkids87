@@ -84,7 +84,33 @@ def row_display(input_table,cur):
 
 
 def value_display(input_table, cur):
-    pass
+    """
+    Input:
+        The table that the user wants to view the values.
+        The cursor object.
+
+    Output:
+        Displays all the values of that table.
+    
+    Features:
+        Displays all the values that the user can view from the table.
+        If the user inputs a value that does not belong to the table, the program will ask the user to input a value that does belong to the table.
+    """
+    instr = ("select * from", input_table)
+    cur.execute(instr)
+    print("The values that you can view from this table are:\n")
+    for i in range(len(cur.column_names)):  
+        print((cur.column_names)[i]," ")
+    print("Please input below the values you would like to view from this table:\n")
+    input3 = input()
+    if input3 not in cur.column_names:
+        print("Please input values that belong to the table like the one's listed above:\n")
+        value_display(input_table)
+    for i in input3:
+        cur.execute("select", i, "from", input_table)
+        print("Here are all the records for that value(s) you wanted to view:\n")
+        print(cur.fetchall())
+    return
 
 
 # Below function will handle printing/ querying entire tables for non-admin users.
