@@ -28,8 +28,6 @@ VALUES ('Leonardo Da Vinci', 'Renaissance', 'An artist, scientist and inventor',
 ('Johannes Vermeer', 'Dutch Golden Age', 'Artist that painted scenes of middle-class life', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
 ('Paul Landowski', 'Industrial revolution', 'Famous french sculptor known for statue of Jesus Christ', 'Realistic', 'France', '1875-06-01', '1961-03-31');
 
--- Query 3
--- Insert data into EXHIBITION without the date of death.
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn) VALUES
 ('Nick Ut', 'Social/tech transformation age', 'Photographer that captured how harsh the human condition can be in certain war climates', 'Black and white', 'Vietnam', '1951-03-29');
 
