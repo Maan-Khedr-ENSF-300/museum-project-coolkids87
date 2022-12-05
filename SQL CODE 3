@@ -78,11 +78,11 @@ VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'L
 -- Query 8
 -- Insert the following data into the ART_OBJECT table without the exhibition name:
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
-('The Terror of War', '1972', 'Photograph depicting the brutality of war and the effects it has on individuals', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
-('Cotton Mill Girl', '1908', 'Photograph depicting the reality of life for working/middle class children during the industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
-('Girl with a Pearl Earring','1665', 'Photo displaying a girl with an earring' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer'),
-('Statue of Liberty', '1876', 'Well-known statue symbolizing freedom and independence', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi'),
-('Christ the Redeemer', '1931', 'Famous statue of Jesus Christ located in Rio De Janerio, Brazil', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
+('The Terror of War', '1972', 'Photograph depicting war', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
+('Cotton Mill Girl', '1908', 'Photograph depicting industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
+('Girl with a Pearl Earring','1665', 'Photo showing young girl' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer'),
+('Statue of Liberty', '1876', 'Well-known statue', 'Industrial Revolution/Gilded ages', 'France', 'L-0001', 'Frédéric Auguste Bartholdi'),
+('Christ the Redeemer', '1931', 'Famous statue of Jesus Christ', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
 
 -- Query 9
 -- Create a table called PERMANENT_COLLECTION with the following attributes: ArtID, DateAcquired, Status, Cost.
@@ -311,7 +311,7 @@ DROP USER IF EXISTS guest@localhost;
 DROP USER IF EXISTS admin@localhost;
 DROP USER IF EXISTS insert_user@localhost;
 CREATE USER admin@localhost IDENTIFIED WITH mysql_native_password BY 'password';
-CREATE USER guest@localhost;
+CREATE USER guest@localhost IDENTIFIED WITH mysql_native_password BY '';
 CREATE USER insert_user@localhost IDENTIFIED WITH mysql_native_password BY 'password';
 GRANT dadmin@localhost TO admin@localhost;
 GRANT dguest@localhost TO guest@localhost;
@@ -319,3 +319,6 @@ GRANT dinsert@localhost TO insert_user@localhost;
 SET DEFAULT ROLE ALL TO admin@localhost;
 SET DEFAULT ROLE ALL TO guest@localhost;
 SET DEFAULT ROLE ALL TO insert_user@localhost;
+ALTER USER 'root'@'localhost' identified with mysql_native_password by 'password';
+ALTER USER 'guest'@'localhost' identified with mysql_native_password by '';
+FLUSH privileges;
