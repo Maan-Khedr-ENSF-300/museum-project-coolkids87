@@ -4,6 +4,16 @@ DROP DATABASE IF EXISTS Art_museum;
 CREATE DATABASE Art_museum;
 USE Art_museum;
 
+-- This SQL code creates all the tables and inserts some data into the tables. (The format SQL code)
+	1. ARTIST
+	2. ART_OBJECT
+	3. BORROWED_COLLECTION
+	4. OWNED_COLLECTION
+	5. OTHER
+	6. PAINTING
+	7. SCULPTURE
+	8. STATUE
+	9. EXHIBITION
 
 DROP TABLE IF EXISTS ARTIST;
 CREATE TABLE ARTIST
@@ -67,7 +77,6 @@ CREATE TABLE OWNED_COLLECTION
 
 DROP TABLE IF EXISTS OTHER;
 
--- Overall, I think this design checks out I am just not sure if there needs to be cascade triggers added on.
 CREATE TABLE ART_OBJECT 
    (Title			VARCHAR(20)				NOT NULL,
     Year			YEAR					NOT NULL,
