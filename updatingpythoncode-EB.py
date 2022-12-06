@@ -27,6 +27,7 @@ def attribute_display(input_table, cur, cnx):
     print("Here are all the records for that attribute(s) you wanted to view:\n")
     for i in user_inlist:
         print(f'{i:45}', end = ' ')
+    print()
     print('-' * 40 * len(user_inlist))
     all_recs = cursor.fetchall()
     num_rows = len(all_recs)                # gets the number of rows/records
@@ -193,37 +194,43 @@ def value_display(input_table, cur, cnx):
 # Below function will handle printing/ querying entire tables for non-admin users.
 
 def query(input_table, cur, cnx):
+    cursor = cnx.cursor(buffered=True)
     if input_table == None:
         table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
         while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
             print("Invalid selection\n")
             table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
         input_table = table_selection
-    print("Would you like to view the entire table (Y/N) ?: ")
+   
+    print("Would you like to view the entire table (Y/N) ?: \n")
+    
     user_input = input()
     print()
     if user_input == 'Y':
-        cur.execute('SELECT * FROM {}'.format(input_table))     # bug fix: for all selct from statements in execute we must use .format
-        at_names = cur.column_names
+        cursor.execute('SELECT * FROM {}'.format(input_table))     # bug fix: for all selct from statements in execute we must use .format
+        at_names = cursor.column_names
         print("Result:\n")
         for i in range(len(at_names)):
-            print(f'{at_names[i]:30}', end = ' ')
+            print(f'{at_names[i]:25}', end = ' ')
         print()
-        rows = cur.fetchall()
-        print( (len(at_names)) * 27  * '-' )
+        rows = cursor.fetchall()
+        print( (len(at_names)) * 25  * '-' )
         size  = len(rows)
         for i in range(size):
             for x in range(len(rows[i])):
                 if rows[i][x] == None:
                     print('')
                 else:
-                    print(f'{rows[i][x]:30}', end = ' ')
+                    print(f'{rows[i][x]:25}', end = ' ')
             print()
+    
     if user_input == 'N':
         print("Options:\n")
         print("1- Display Certain Attributes (columns)")
         print("2- Display Certain Rows of the Table")
         print("3- Display Certain Values of Table")
+        print("4- Go Back/Display option to view entire table")
+        print("5- Exit the application")
         user_input = int(input())
         if user_input == 1:
             attribute_display(input_table, cur, cnx)
@@ -231,6 +238,13 @@ def query(input_table, cur, cnx):
             row_display(input_table,cur,cnx)
         elif user_input == 3:
             value_display(input_table,cur,cnx)
+        elif user_input == 4:
+            print("Going back to query menu\n")
+            query(input_table, cur, cnx)
+        elif user_input == 5:
+            print("Thanks for using this application\n")
+            exit()
+
 
 
 def admin_consol(cur, cnx):
@@ -289,6 +303,7 @@ def data_entry(cur, cnx):
         selection = int(input(menu))
     if selection == 1:
         query(None, cur, cnx)
+        data_entry(cur, cnx)
     elif selection == 2:
         insert_tuple_file(cur, cnx)   
     elif selection == 3:
@@ -366,7 +381,7 @@ def update_tuple(cur, cnx):
     condition_attribute_selection = input()
     while (condition_attribute_selection not in cursor.column_names and condition_attribute_selection != ""):
         print("Invalid selection\n")
-        condition_attribute_selection = input("Which attribute would you like to use as a condition for {}? (Enter the attribute name)\n(Press enter to have no condition[updates every {} value in {} to {}]):\n".format(cur.column_names, update_attribute_selection, table_selection, update_value_selection))
+        condition_attribute_selection = input("Which attribute would you like to use as a condition for {}? (Enter the attribute name)\n(Press enter to have no condition[updates every {} value in {} to {}]):\n".format(cur.column_names, atr, table_selection, update_value_selection))
     cursor.fetchall()
     try:
         if condition_attribute_selection == "":
@@ -464,6 +479,7 @@ def guest_view(cur, cnx):
     if table != '' or table != None:
         query(table, cur, cnx)
 
+
         
 def main():   
     # Connect to server
@@ -486,12 +502,12 @@ def main():
         passcode=None
     cnx = mysql.connector.connect(
         host="127.0.0.1",
-        port=3306,
+        port=33060,
         user=username,
         password=passcode,
         auth_plugin = 'mysql_native_password')  
     cur = cnx.cursor()
-    fd = open("test.sql", "r")
+    fd = open("DATABASE.sql", "r")
     sqlfile = fd.read()
     fd.close()
     sqlcommands = sqlfile.split(';')
