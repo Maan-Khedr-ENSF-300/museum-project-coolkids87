@@ -9,8 +9,8 @@ CREATE TABLE ARTIST
 	Descriptions	VARCHAR(30),
 	MainStyle	 	VARCHAR(30),
    	Country_origin	VARCHAR(30),
-	DateBorn		DATE,	
-   	DateDied		DATE,
+	DateBorn		VARCHAR(10),	
+   	DateDied		VARCHAR(10),
    	PRIMARY KEY(AName));
 	
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied)
@@ -26,12 +26,12 @@ INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBo
 DROP TABLE IF EXISTS EXHIBITION;
 CREATE TABLE EXHIBITION
 	(EName    		VARCHAR(50)		NOT NULL,
-	Start_date		DATE			NOT NULL,
-	End_date		DATE,
+	Start_date		VARCHAR(10)			NOT NULL,
+	End_date		VARCHAR(10),
 	PRIMARY KEY(EName));
     
 INSERT INTO EXHIBITION(EName, Start_date, End_date)
-VALUES ('Yves Saint Laurent aux Musées', '2023-01-29', '2023-05-15'), 
+VALUES ('YSL aux Musées', '2023-01-29', '2023-05-15'), 
 ('150 years of Mondrian', '2022-10-29', '2023-02-10');
 
 DROP TABLE IF EXISTS ART_OBJECT;
@@ -53,7 +53,7 @@ CREATE TABLE ART_OBJECT
 			ON DELETE SET NULL ON UPDATE CASCADE);
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName)
-VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'Yves Saint Laurent aux Musées'),
+VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'YSL aux Musées'),
 ('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian');
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
@@ -66,7 +66,7 @@ INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, Art
 DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
 	(ArtID			CHAR(10),
-	DateAcquired	date			NOT NULL,
+	DateAcquired	VARCHAR(10)			NOT NULL,
     Status			VARCHAR(20)		NOT NULL,  -- Status: on display, on loan, or stored
     Cost			int				NOT NULL,
     PRIMARY KEY(ArtID),
@@ -96,15 +96,15 @@ VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL', 'The Renaissa
 ('National Park Service', '1849 C Street, Washington, DC', 'Manages parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
 
 INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName) VALUES
-('Brazil Ministry of Culture', 'Esplanada dos Ministérios BL B, Brasília', 'Regulates historical artifacts', 'Government', '556120242287', 'Felipe Carmona Cantera');
+('Brazil MoC', 'Esplanada dos Ministérios BL B, Brasília', 'Regulates historical artifacts', 'Government', '556120242287', 'Felipe Carmona Cantera');
 
 
 DROP TABLE IF EXISTS BORROWED_COLLECTION;
 CREATE TABLE BORROWED_COLLECTION 
 	(ArtID				CHAR(10),
 	collection_name	   	VARCHAR(40),
-	Date_borrowed  		DATE			NOT NULL,
-	Date_returned	    DATE,
+	Date_borrowed  		VARCHAR(10)			NOT NULL,
+	Date_returned	    VARCHAR(10),
 	PRIMARY KEY(ArtID),
 	CONSTRAINT BAFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
@@ -116,7 +116,7 @@ CREATE TABLE BORROWED_COLLECTION
 INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
 VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
 ('L-0001', 'National Park Service', '2022-11-01', '2023-05-20'),
-('L-0002', 'Brazil Ministry of Culture', '2022-10-20', '2022-11-20');
+('L-0002', 'Brazil MoC', '2022-10-20', '2022-11-20');
 
 DROP TABLE IF EXISTS OTHER;
 CREATE TABLE OTHER 
