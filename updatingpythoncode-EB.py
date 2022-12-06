@@ -207,17 +207,17 @@ def query(input_table, cur, cnx):
         at_names = cur.column_names
         print("Result:\n")
         for i in range(len(at_names)):
-            print(f'{at_names[i]:40}', end = ' ')
+            print(f'{at_names[i]:30}', end = ' ')
         print()
         rows = cur.fetchall()
-        print(( (len(at_names)) * 40 ) * '-' )
+        print( (len(at_names)) * 27  * '-' )
         size  = len(rows)
         for i in range(size):
             for x in range(len(rows[i])):
                 if rows[i][x] == None:
                     print('')
                 else:
-                    print(f'{rows[i][x]:40}', end = ' ')
+                    print(f'{rows[i][x]:30}', end = ' ')
             print()
     if user_input == 'N':
         print("Options:\n")
@@ -288,11 +288,11 @@ def data_entry(cur, cnx):
         print("Invalid selection\n")
         selection = int(input(menu))
     if selection == 1:
-        query(None, cur)
+        query(None, cur, cnx)
     elif selection == 2:
         insert_tuple_file(cur, cnx)   
     elif selection == 3:
-        insert_tuple_prompt(cur)
+        insert_tuple_prompt(cur, cnx)
     elif selection == 4:
         update_tuple(cur, cnx)
     elif selection == 5:    
@@ -305,93 +305,120 @@ def insert_tuple_file(cur, cnx):
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
         print("Invalid selection\n")
         table_selection = input("Which table would you like to insert a tuple into? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
-    
+    cur.execute("SELECT * FROM {}".format(table_selection))
+    alist = list(cur.column_names)
+    cur.fetchall()
     filename = input("Please enter the name of the file you would like to open(each line of text in the file should be attribute values corresponding to the order in the table, separated by commas):\n")
     insert_file = open(filename, "r")
-    for line in insert_file.readlines():
-        cur.execute("insert into", table_selection, "values", line)
+    while (insert_file == None):
+        print("Invalid file name\n")
+        filename = input("Please enter the name of the file you would like to open(each line of text in the file should be attribute values corresponding to the order in the table, separated by commas):\n")
+        insert_file = open(filename, "r")
+    alist = [line.rstrip() for line in insert_file]
+    for line in alist:
+        try:
+            cur.execute("INSERT INTO {} VALUES {}".format(table_selection, line))
+            cnx.commit()
+        except mysql.connector.Error as err:
+            print("Error: {}".format(err))
+            data_entry(cur, cnx)
         cnx.commit()
     insert_file.close()
+    print("\nInsertion successful\n")
+    data_entry(cur, cnx)
 
 
-def insert_tuple_prompt(cur):
+def insert_tuple_prompt(cur, cnx):
     table_selection = input("Which table would you like to insert a tuple into? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
         print("Invalid selection\n")
         table_selection = input("Which table would you like to insert a tuple into? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
-    cur.execute("select * from", table_selection)
-    
+    cur.execute("select * from {}".format(table_selection))
     attribute_list = []
     for col_name in cur.column_names:
         attribute_selection = input("Enter the value for " + col_name + ":\n")
         attribute_list.append(attribute_selection)
-    
-    
-    cur.execute("insert into", table_selection, "values", attribute_list)
-
-    cur.commit()
-
-    
+    attribute_tuple = tuple(attribute_list)
+    cur.fetchall()
+    try:
+        cur.execute("INSERT INTO {} VALUES {}".format(table_selection, attribute_tuple))
+        print("\nTuple inserted successfully\n")
+        cnx.commit()
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err))
+        data_entry(cur, cnx)
+    data_entry(cur, cnx)
 
 def update_tuple(cur, cnx):
-    print("Which table would you like to update? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
-    table_selection = input()
+    cursor = cnx.cursor(buffered=True)
+    table_selection = input("Which table would you like to update? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
         print("Invalid selection\n")
         table_selection = input("Which table would you like to update? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
-    
-    print("Which attribute would you like to update? (Enter the attribute name):\n")
-    update_attribute_selection = input()
-    cur.execute("select * from {}".format(table_selection))
-    while (update_attribute_selection not in cur.column_names):
+    cursor.execute("SELECT * FROM {}".format(table_selection))
+    print("attribute to update?:\n")
+    atr = input()
+    while (atr not in cursor.column_names):
         print("Invalid selection\n")
-        update_attribute_selection = input("Which attribute would you like to update? (Enter the attribute name):\n")
-    
-    update_value_selection = input("What would you like to update the value to?\n")
-    
-    condition_attribute_selection = input("Which attribute would you like to use as a condition? (Press enter to have no condition[updates every {} value in {} to {}]):\n".format(update_attribute_selection, table_selection, update_value_selection))
-    while (condition_attribute_selection not in cur.column_names and condition_attribute_selection != ""):
+        atr = input("Which attribute would you like to update from {}? (Enter the attribute name):\n".format(cursor.column_names))
+    update_value_selection = input("What would you like to update the {} value to?\n".format(atr))
+    print("Which attribute would you like to use as a condition for?")
+    condition_attribute_selection = input()
+    while (condition_attribute_selection not in cursor.column_names and condition_attribute_selection != ""):
         print("Invalid selection\n")
-        condition_attribute_selection = input("Which attribute would you like to use as a condition? (Press enter to have no condition[updates every {} value in {} to {}]):\n".format(update_attribute_selection, table_selection, update_value_selection))
+        condition_attribute_selection = input("Which attribute would you like to use as a condition for {}? (Enter the attribute name)\n(Press enter to have no condition[updates every {} value in {} to {}]):\n".format(cur.column_names, update_attribute_selection, table_selection, update_value_selection))
+    cursor.fetchall()
+    try:
+        if condition_attribute_selection == "":
+            cursor.execute("UPDATE {} SET {} = {}".format(table_selection, atr, update_value_selection))
     
-    if condition_attribute_selection == "":
-        cur.execute("update {} set {} = {}".format(table_selection, update_attribute_selection, update_value_selection))
-    
-    else:
-        condition_value_selection = input("What would you like the condition value to be?\n")
-        cur.execute("update {} set {} = {} where {} = {}".format(table_selection, update_attribute_selection, update_value_selection, condition_attribute_selection, condition_value_selection))
-    
-    cnx.commit()
-    if cur.rowcount == 0:
-        print("No tuples were updated")
-    else:
-        print("Updated {} tuples".format(cur.rowcount)) 
+        else:
+            condition_value_selection = input("What would you like the condition value to be?\n")
+            print()
+            cursor.execute("UPDATE {} SET {} = '{}' WHERE {} = '{}'".format(table_selection, atr, update_value_selection, condition_attribute_selection, condition_value_selection))
 
+        if cursor.rowcount == 0:
+            print("No tuples were updated")
+        else:
+            print("Updated {} tuples".format(cursor.rowcount)) 
+        cnx.commit()
+        data_entry(cur, cnx)
+    except mysql.connector.Error as err:
+        print("Error: {}".format(err))
+        data_entry(cur, cnx)
+    
 def delete_tuple(cur, cnx):
     cursor = cnx.cursor(buffered=True)
-    print('Which table would you like to delete a tuple from? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n')
-    table_selection = input()
+    table_selection = input('Which table would you like to delete a tuple from? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n')
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
         print("Invalid selection\n")
         table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
-    #good
-    print('Which attribute would you like to use to delete a tuple? (or press enter to delete all contents of table):\n')
-    attribute_selection = input()
-    cursor.execute("SELECT * FROM {}".format(table_selection))
+
+    cursor.execute("select * from {}".format(table_selection))
+    print("which attribute?")
+    attribute_selection = str(input())
     while (attribute_selection not in cursor.column_names and attribute_selection != ""):
         print("Invalid selection\n")
-        attribute_selection = input("Which attribute would you like to use to delete a tuple? (or press enter to delete all contents of table):\n")
-    if attribute_selection == "":
-        cursor.execute("DELETE FROM {}".format(table_selection))
+        attribute_selection = input('Which attribute would you like to use to delete a tuple from {}?\n(or press enter to delete all contents of table):\n'.format(cursor.column_names))
+    if attribute_selection == "":      # this entire if block is functional.
+        try:
+            cursor.execute("DELETE FROM {}".format(table_selection))
+            print("Deleted {} tuples".format(cursor.rowcount))
+            cnx.commit()
+            data_entry(cur, cnx)
+        except mysql.connector.Error as err:
+            print("Error: {}".format(err))
+            data_entry(cur, cnx)
     else:
-        print('Enter a value condition to use to delete a tuple(s):\n')
-        value_selection = input()
-        cursor.execute("DELETE FROM {} WHERE {} = {}".format(table_selection, attribute_selection, value_selection))
-    cnx.commit()
-    if(cur.rowcount == 0):
-        print("No tuples were deleted\n")
-    else:
-        print(cursor.rowcount, "record(s) deleted")
+        value_selection = input('Enter a value condition to use to delete a tuple(s):\n')
+        try:
+            cursor.execute("DELETE FROM {} WHERE {} = '{}'".format(table_selection, attribute_selection, value_selection))
+            print("Deleted {} tuple(s)".format(cursor.rowcount))
+            cnx.commit()
+            data_entry(cur, cnx)
+        except mysql.connector.Error as err:
+            print("Error: {}".format(err))
+            data_entry(cur, cnx)
 
 def guest_view(cur, cnx):
     print("What are you looking for:\n")
@@ -411,7 +438,7 @@ def guest_view(cur, cnx):
     table = ''
     selection = int(input())
     if selection not in range(1, 11):
-        guest_view()
+        guest_view(cur, cnx)
     else:
         if selection == 1:
             table = 'ARTIST'
@@ -434,10 +461,9 @@ def guest_view(cur, cnx):
         elif selection == 10:
             print("\nThank you for using this application!")
             exit()
-
-        
     if table != '' or table != None:
         query(table, cur, cnx)
+
         
 def main():   
     # Connect to server
