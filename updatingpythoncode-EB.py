@@ -202,10 +202,11 @@ def query(input_table, cur, cnx):
             table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
         input_table = table_selection
    
-    print("Would you like to view the entire table (Y/N) ?: \n")
-    
-    user_input = input()
-    print()
+    user_input = input("Would you like to view the entire table (Y/N)?: \n")
+    while (user_input != "Y" and user_input != "N"):
+        print("Invalid selection\n")
+        user_input = input("Would you like to view the entire table (Y/N)?: \n")
+
     if user_input == 'Y':
         cursor.execute('SELECT * FROM {}'.format(input_table))     # bug fix: for all selct from statements in execute we must use .format
         at_names = cursor.column_names
@@ -219,10 +220,16 @@ def query(input_table, cur, cnx):
         for i in range(size):
             for x in range(len(rows[i])):
                 if rows[i][x] == None:
-                    print('')
+                    n = 'NULL'
+                    print(f'{n:<25}', end = ' ')
                 else:
-                    print(f'{rows[i][x]:25}', end = ' ')
+                    n = rows[i][x]
+                    if isinstance(n, str):
+                        n = (n[:22] + '..') if len(n) > 25 else n
+                    print(f'{n:<25}', end = ' ')
             print()
+        print()
+        guest_view(cur, cnx)
     
     if user_input == 'N':
         print("Options:\n")
@@ -333,13 +340,14 @@ def insert_tuple_file(cur, cnx):
     for line in alist:
         try:
             cur.execute("INSERT INTO {} VALUES {}".format(table_selection, line))
+            print('Insert complete')
             cnx.commit()
         except mysql.connector.Error as err:
             print("Error: {}".format(err))
             data_entry(cur, cnx)
         cnx.commit()
     insert_file.close()
-    print("\nInsertion successful\n")
+    print("\nAll insertions successful\n")
     data_entry(cur, cnx)
 
 
@@ -464,9 +472,9 @@ def guest_view(cur, cnx):
         elif selection == 4:
             table = 'PERMANENT_COLLECTION'
         elif selection == 5:
-            table = 'OTHER_COLLECTION'
-        elif selection == 6:
             table = 'BORROWED_COLLECTION'
+        elif selection == 6:
+            table = 'OTHER_COLLECTION'
         elif selection == 7:
             table = 'PAINTING'
         elif selection == 8:
@@ -502,12 +510,12 @@ def main():
         passcode=None
     cnx = mysql.connector.connect(
         host="127.0.0.1",
-        port=33060,
+        port=3306,
         user=username,
         password=passcode,
         auth_plugin = 'mysql_native_password')  
     cur = cnx.cursor()
-    fd = open("DATABASE.sql", "r")
+    fd = open("DB.sql", "r")
     sqlfile = fd.read()
     fd.close()
     sqlcommands = sqlfile.split(';')
