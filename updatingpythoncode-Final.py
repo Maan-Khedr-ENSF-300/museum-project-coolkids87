@@ -2,9 +2,22 @@ import mysql.connector
 from mysql.connector import errorcode
 import os
 
-# revised attribute_display... seems to check out.
 
 def attribute_display(input_table, cur, cnx):
+    """
+    Input: 
+        The table that the user wants to view the attributes. 
+        The cursor object.
+
+    Output:
+      Displays all the attributes of that table.
+
+    Features:
+      Displays all the attributes that the user can view from the table.
+      If the user inputs an attribute that does not belong to the table, the program will ask the user to input an attribute that does belong to the table.
+        If the user inputs an attribute that does belong to the table, the program will display all the records for that attribute.
+    """
+
     cursor = cnx.cursor(buffered=True)
     instr = ("select * from {}".format(input_table))
     cursor.execute(instr)
@@ -38,6 +51,23 @@ def attribute_display(input_table, cur, cnx):
     guest_view(cur, cnx)
 
 def row_display(input_table, cur, cnx):
+    """
+    Input:
+        The table that the user wants to view the rows.
+        The cursor object.
+    
+    Output:
+        Displays all the rows of that table.
+
+    Features:
+        Asks the user how many rows they would like to view.
+        Prompts the amount of rows the user can view.
+        If the user inputs a number that is greater than the number of rows in the table, 
+            the program will ask the user to input a number that is less than or equal to the number of rows in the table.
+        If the user inputs a number that is less than the number of rows in the table,
+            the program will ask the user to input the row numbers that they would like to view. (inputing 0 is an option to not view any rows)
+    """
+
     cursor = cnx.cursor(buffered=True)
     row_count = 0
     cursor.execute("SELECT * FROM {}".format(input_table))
@@ -120,7 +150,6 @@ def row_display(input_table, cur, cnx):
 
 
 def value_display(input_table, cur, cnx):
-    
     """
     Input:
         The table that the user wants to view the values.
@@ -131,8 +160,16 @@ def value_display(input_table, cur, cnx):
     
     Features:
         Displays all the values that the user can view from the table.
+        Asks the user how many rows they would like to view.
+            Prompts the amount of rows the user can view.
+            If the user inputs a number that is greater than the number of rows in the table,
+                the program will ask the user to input a number that is less than or equal to the number of rows in the table.
+            If the user inputs a number that is less than the number of rows in the table,
+                the program will ask the user to input the row numbers that they would like to view. (inputing 0 is an option to not view any rows)
+        Asks the user which attributes they would like to view from the table.
         If the user inputs a value that does not belong to the table, the program will ask the user to input a value that does belong to the table.
     """
+
     cursor = cnx.cursor(buffered=True)
     instr = ("SELECT * FROM {}".format(input_table))
     cursor.execute(instr)
@@ -194,6 +231,29 @@ def value_display(input_table, cur, cnx):
 # Below function will handle printing/ querying entire tables for non-admin users.
 
 def query(input_table, cur, cnx):
+    """
+    Input:
+        The table that the user wants to query.
+        The cursor object.
+        Tables 
+    
+    Output:
+        Displays all the records of that table.
+
+    Features:
+        Asks the user what table they would like to query in case they did not input a table.
+        If the user inputs a table that does not exist, the program will ask the user to input a table that does exists and 
+            will display all the records of that table.
+        If the user inputs a table that does exist, the program will ask again Y or N to display.
+            If the user inputs Y, the program will display all the records of that table.
+            If the user inputs N, the program will give 3 options
+                1. Display certain attributes
+                2. Display certain rows
+                3. Display certain values
+                4. Go Back/Display option to view entire table
+                5. Exit the application
+    """
+
     cursor = cnx.cursor(buffered=True)
     if input_table == None:
         table_selection = input("Which table would you like to query? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
@@ -255,6 +315,22 @@ def query(input_table, cur, cnx):
 
 
 def admin_consol(cur, cnx):
+    """
+    input:
+        The cursor object.
+        The connection object.
+        Options
+    
+    output:
+        Options for the admin to choose from.
+            1: Query (Insert, Update, Delete)
+            2: Provide a file path to a sql script file to run on MySQL using the connector
+            3: Exit
+
+    Features:
+        Interface for the admin to choose from.
+    """
+
     print('Select an option:\n1 - Perform a query\n2 - Provide the path and file name of an sql script file to the application, which will then run the script file on MySQL using the connector\n3 - exit')
     user_input = int(input())
     if user_input not in [1, 2, 3]:
@@ -303,6 +379,25 @@ def admin_consol(cur, cnx):
 
         
 def data_entry(cur, cnx):
+    """
+    input:
+        The cursor object. 
+        The connection object.
+        Options
+
+    output:
+        Options for the data entry to choose from.
+            1: Query
+            2: Insert new tuples to a table using a file
+            3: Insert a tuple to a table using prompts
+            4: Update a tuple
+            5: Delete a tuple
+            6: Exit
+
+    Features:
+        Interface for the data entry to choose from.
+    """
+
     menu = "What would you like to do:\n1 - Perform a query\n2 - Insert new tuples to a table using a file\n3 - Insert a tuple to a table using prompts\n4 - Update a tuple\n5 - Delete a tuple\n6 - Exit\n"
     selection = int(input(menu))
     while (selection > 6 or selection < 1):
@@ -322,7 +417,21 @@ def data_entry(cur, cnx):
     elif selection == 6:
         return
     
+
+
 def insert_tuple_file(cur, cnx):
+    """
+    input:
+        The cursor object.
+        The connection object.
+        table selection
+    
+    features:
+        Ask what table the user would like to insert a tuple into.
+        Ask for the file name of the file the user would like to insert.
+        Insert the file into the table.
+    """
+
     table_selection = input("Which table would you like to insert a tuple into? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
         print("Invalid selection\n")
@@ -351,7 +460,20 @@ def insert_tuple_file(cur, cnx):
     data_entry(cur, cnx)
 
 
+
+
 def insert_tuple_prompt(cur, cnx):
+    """
+    input:
+        The cursor object.
+        table selection
+    
+    features:
+        Ask what table the user would like to insert a tuple into.
+        Ask for the values of the tuple the user would like to insert.
+        Insert the tuple into the table.
+    """
+
     table_selection = input("Which table would you like to insert a tuple into? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
         print("Invalid selection\n")
@@ -372,7 +494,22 @@ def insert_tuple_prompt(cur, cnx):
         data_entry(cur, cnx)
     data_entry(cur, cnx)
 
+
+
 def update_tuple(cur, cnx):
+    """
+    input:
+        The cursor object.
+        The connection object.
+        table selection
+
+    features:
+        Ask what table the user would like to delete a tuple from.
+        Ask for the attribute the user would like to use to find the tuple to delete.
+        Ask for the value of the attribute the user would like to use to find the tuple to delete.
+        Delete the tuple from the table.
+    """
+
     cursor = cnx.cursor(buffered=True)
     table_selection = input("Which table would you like to update? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n")
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
@@ -410,7 +547,29 @@ def update_tuple(cur, cnx):
         print("Error: {}".format(err))
         data_entry(cur, cnx)
     
+
+
 def delete_tuple(cur, cnx):
+    """
+    input:
+        None
+    
+    output:
+        Prints out a list of tables that the user can view.
+            1: Artist Information
+            2: Exhibit Information
+            3: Art Object information
+            4: Permanent collection of Art Objects
+            5: Borrowed Collection of Art Objects
+            6: Other Collection of Art Objects
+            7: Painting Information
+            8: Statue Information
+            9: Other Types of Art
+
+    features:
+        Prints out a list of tables that the user can view.
+    """
+
     cursor = cnx.cursor(buffered=True)
     table_selection = input('Which table would you like to delete a tuple from? (ARTIST, EXHIBITION, ART_OBJECT, PERMANENT_COLLECTION, OTHER_COLLECTION, BORROWED_COLLECTION, OTHER, PAINTING, STATUE):\n')
     while (table_selection != "ARTIST" and table_selection != "EXHIBITION" and table_selection != "ART_OBJECT" and table_selection != "PERMANENT_COLLECTION" and table_selection != "OTHER_COLLECTION" and table_selection != "BORROWED_COLLECTION" and table_selection != "OTHER" and table_selection != "PAINTING" and table_selection != "STATUE"):
@@ -443,7 +602,20 @@ def delete_tuple(cur, cnx):
             print("Error: {}".format(err))
             data_entry(cur, cnx)
 
+
+
 def guest_view(cur, cnx):
+    """
+    input:
+        cursor
+        connection
+
+    output:
+        Prints out a list of tables that the user can view. (I did not the options as it is easily readable in the code)
+
+    features:
+        Prints out a list of all the tables that the user can view.
+    """
     print("What are you looking for:\n")
     print("1- Artist Information")
     print("2- Exhibit Information")
@@ -537,6 +709,8 @@ def main():
 
      # Close connection
     cnx.close()
+
+
 
 if __name__ == "__main__":
     main()
