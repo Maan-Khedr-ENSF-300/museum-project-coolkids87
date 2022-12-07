@@ -5,46 +5,46 @@ SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS ARTIST;
 CREATE TABLE ARTIST
-	(AName			VARCHAR(500)		NOT NULL,
-	Epoch		 	VARCHAR(250),
-	Descriptions	VARCHAR(500),
-	MainStyle	 	VARCHAR(500),
-   	Country_origin	VARCHAR(100),
-	DateBorn		CHAR(10),	
-   	DateDied		CHAR(10),
+	(AName			VARCHAR(30)		NOT NULL,
+	Epoch		 	VARCHAR(30),
+	Descriptions		VARCHAR(30),
+	MainStyle	 	VARCHAR(30),
+   	Country_origin		VARCHAR(30),
+	DateBorn		VARCHAR(10),	
+   	DateDied		VARCHAR(10),
    	PRIMARY KEY(AName));
 	
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn, DateDied)
-VALUES ('Leonardo Da Vinci', 'Renaissance', 'Revolutionary', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
+VALUES ('Leonardo Da Vinci', 'Renaissance', 'Scientist and inventor', 'Renaissance', 'Italy', '1452-04-15', '1519-05-02'),
 ('Imogen Cunningham', '20th Century', 'Photographer', 'Black and White',  'USA', '1883-04-12', '1976-06-23'),
-('Frédéric A. Bartholdi', 'Industrial Rev.', 'French sculptor', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
-('Lewis Hine', 'Industrial Rev.', 'Showcased human nature' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
-('Johannes Vermeer', 'Dutch Golden Age', 'Outlined human nature', 'Oil paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
-('Paul Landowski', 'Industrial rev.', 'Statue Designer', 'Realistic', 'France', '1875-06-01', '1961-03-31');
+('Frédéric A. Bartholdi', 'Industrial Revolution', 'Famous French sculptor', 'Classical Statues', 'France', '1834-04-02', '1904-10-04'),
+('Lewis Hine', 'Industrial Revolution', 'Captured human nature' ,'Black and White', 'USA', '1874-09-26', '1940-11-03'),
+('Johannes Vermeer', 'Dutch Golden Age', 'Dutch artist', 'Oil based paintings', 'Dutch Republic', '1632-10-31', '1675-12-15'),
+('Paul Landowski', 'Industrial revolution', 'Famous french sculptor', 'Realistic', 'France', '1875-06-01', '1961-03-31');
 INSERT INTO ARTIST(AName, Epoch, Descriptions, MainStyle, Country_origin, DateBorn) VALUES
-('Nick Ut', 'tech dev. age', 'captured human cond.', 'B AND W', 'Vietnam', '1951-03-29');
+('Nick Ut', 'Transformation age', 'Captured harsh conditions', 'Black and white', 'Vietnam', '1951-03-29');
 
 DROP TABLE IF EXISTS EXHIBITION;
 CREATE TABLE EXHIBITION
 	(EName    		VARCHAR(50)		NOT NULL,
-	Start_date		CHAR(10)			NOT NULL,
-	End_date		CHAR(10),
+	Start_date		VARCHAR(10)		NOT NULL,
+	End_date		VARCHAR(10),
 	PRIMARY KEY(EName));
     
 INSERT INTO EXHIBITION(EName, Start_date, End_date)
-VALUES ('Yves Saint Laurent aux Musées', '2023-01-29', '2023-05-15'), 
+VALUES ('YSL aux Musées', '2023-01-29', '2023-05-15'), 
 ('150 years of Mondrian', '2022-10-29', '2023-02-10');
 
 DROP TABLE IF EXISTS ART_OBJECT;
 CREATE TABLE ART_OBJECT 
-	(Title			VARCHAR(50)			NOT NULL,
+	(Title			VARCHAR(30)		NOT NULL,
 	YearCreated		INT, 			 
-	Descript	    VARCHAR(500),		
-	Epoch			VARCHAR(200),
-	CultureOfOrigin	VARCHAR(50),
-	ArtID 			CHAR(10)			NOT NULL,
-	Artist_Name		VARCHAR(100),
-    ExName			VARCHAR(200)		DEFAULT NULL,
+	Descript	    	VARCHAR(30),		
+	Epoch			VARCHAR(30),
+	CultureOfOrigin		VARCHAR(30),
+	ArtID 			VARCHAR(10)		NOT NULL,
+	Artist_Name		VARCHAR(30),
+    ExName			VARCHAR(50)		DEFAULT NULL,
 	PRIMARY KEY(ArtID),
 	CONSTRAINT ANFFK	
 		FOREIGN KEY(Artist_Name) REFERENCES ARTIST(AName)
@@ -54,24 +54,24 @@ CREATE TABLE ART_OBJECT
 			ON DELETE SET NULL ON UPDATE CASCADE);
 
 INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name, ExName)
-VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'Yves Saint Laurent aux Musées'),
+VALUES ('Mona Lisa', '1503', 'Very famous', 'Renaissance', 'Italy', 'P-0000', 'Leonardo Da Vinci', 'YSL aux Musées'),
 ('Magnolia Blossom', '1925', 'Black and white', '20th Century', 'USA', 'O-0001', 'Imogen Cunningham', '150 years of Mondrian');
 
-INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) 
-VALUES ('The Terror of War', '1972', 'Depicting war', 'Social/tech transformation age', 'USA', 'O-0002', 'Nick Ut'),
+INSERT INTO ART_OBJECT(Title, YearCreated, Descript, Epoch, CultureOfOrigin, ArtID, Artist_Name) VALUES
+('The Terror of War', '1972', 'Photograph depicting war', 'Transformation age', 'USA', 'O-0002', 'Nick Ut'),
 ('Cotton Mill Girl', '1908', 'Industrial revolution', 'Industrial revolution', 'USA', 'O-0003', 'Lewis Hine'),
-('Girl with a Pearl Earring','1665', 'Showing young girl' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer'),
-('Statue of Liberty', '1876', 'Well-known statue', 'Industrial Rev.', 'France', 'L-0001', 'Frédéric Auguste Bartholdi'),
-('Christ the Redeemer', '1931', 'Statue of Jesus', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
+('Girl with a Pearl Earring','1665', 'Woman with earring' , 'Dutch Golden Age', 'Dutch Republic', 'P-0001', 'Johannes Vermeer'),
+('Statue of Liberty', '1876', 'Well-known statue', 'Industrial Revolution', 'France', 'L-0001', 'Frédéric A. Bartholdi'),
+('Christ the Redeemer', '1931', 'Statue of Jesus Christ', 'Roaring 20s', 'Brazil', 'L-0002', 'Paul Landowski');
 
 DROP TABLE IF EXISTS PERMANENT_COLLECTION;
 CREATE TABLE PERMANENT_COLLECTION
 	(ArtID			CHAR(10),
-	DateAcquired	char(10)			NOT NULL,
-    Status			VARCHAR(20)		NOT NULL,  -- Status: on display, on loan, or stored
-    Cost			int				NOT NULL,
-    PRIMARY KEY(ArtID),
-    CONSTRAINT AOFFK
+	DateAcquired		VARCHAR(10)		NOT NULL,
+    	Status			VARCHAR(20)		NOT NULL,  -- Status: on display, on loan, or stored
+    	Cost			int			NOT NULL,
+    	PRIMARY KEY(ArtID),
+    	CONSTRAINT AOFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
             
@@ -84,29 +84,28 @@ VALUES ('O-0001', '2021-01-01', 'On display', '22000'),
 DROP TABLE IF EXISTS OTHER_COLLECTION;
 CREATE TABLE OTHER_COLLECTION
 	(OName			VARCHAR(100)			NOT NULL,
-    Address	   	 	VARCHAR(60),
-    Descrip			VARCHAR(500),
-    Otype			VARCHAR(10),
-    ContactPhone	VARCHAR(30)			UNIQUE, -- Can't be INT as it is larger than MAX INT
-    ContactName		VARCHAR(20)			UNIQUE,
-    PRIMARY KEY(OName));
+    	Address	   	 	VARCHAR(60),
+   	Descrip			VARCHAR(500),
+    	Otype			VARCHAR(10),
+   	ContactPhone		VARCHAR(30)			UNIQUE, -- Can't be INT as it is larger than MAX INT
+    	ContactName		VARCHAR(30)			UNIQUE,
+    	PRIMARY KEY(OName));
 
 INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName)
-VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL 60637, United States', 'The Renaissance Society, founded in 1915, is a leading 
-independent contemporary art museum located on the campus of the University of Chicago, with a focus on the commissioning and production of new works by international artists', 
-'Museum', 17737028670, 'Pierre Sondeljker'),
-('National Park Service', '1849 C Street, Washington, D.C. 20240, United States', 'The National Park Service is a United States federal agency that manages national parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
+VALUES ('Renaissance Collection', '5811 S Ellis Ave, Chicago, IL', 'The Renaissance Society', 
+'Museum', '17737028670', 'Pierre Sondeljker'),
+('National Park Service', '1849 C Street, Washington, DC', 'Manages parks and monuments', 'Government', '8008778339', 'Charles F. Sams III');
 
-INSERT INTO OTHER_COLLECTION (OName, Descrip, Otype) VALUES
-('National Historic Heritage of Brazil', 'Located in Brazil and regulates all historical artifacts and monuments throughout the country', 'Government');
+INSERT INTO OTHER_COLLECTION (OName, Address, Descrip, Otype, ContactPhone, ContactName) VALUES
+('Brazil MoC', 'Esplanada dos Ministérios BL B, Brasília', 'Regulates historical artifacts', 'Government', '556120242287', 'Felipe Carmona Cantera');
 
 
 DROP TABLE IF EXISTS BORROWED_COLLECTION;
 CREATE TABLE BORROWED_COLLECTION 
-	(ArtID				CHAR(10),
+	(ArtID			CHAR(10),
 	collection_name	   	VARCHAR(40),
-	Date_borrowed  		CHAR(10)			NOT NULL,
-	Date_returned	    CHAR(10),
+	Date_borrowed  		VARCHAR(10)			NOT NULL,
+	Date_returned	    	VARCHAR(10),
 	PRIMARY KEY(ArtID),
 	CONSTRAINT BAFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
@@ -118,13 +117,13 @@ CREATE TABLE BORROWED_COLLECTION
 INSERT INTO BORROWED_COLLECTION (ArtID, collection_name, Date_borrowed, Date_returned)
 VALUES ('P-0000', 'Renaissance Collection', '2022-10-28', '2023-05-20'),
 ('L-0001', 'National Park Service', '2022-11-01', '2023-05-20'),
-('L-0002', 'National Historic Heritage of Brazil', '2022-10-20', '2022-11-20');
+('L-0002', 'Brazil MoC', '2022-10-20', '2022-11-20');
 
 DROP TABLE IF EXISTS OTHER;
 CREATE TABLE OTHER 
 	(ArtID 			CHAR(10),
 	Type			VARCHAR(20),
-	Style	        VARCHAR(30),
+	Style	       		VARCHAR(30),
 	PRIMARY KEY(ArtID),
 	CONSTRAINT OAIFKK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
@@ -153,16 +152,16 @@ VALUES ('P-0000', 'Renaissance', 'Portrait', 'Cottonwood'),
 DROP TABLE IF EXISTS STATUE;
 CREATE TABLE STATUE
 	(ArtID 			CHAR(10),
-	Height_meters	FLOAT,
-	Weight_tonnes	FLOAT,			
+	Height_m		FLOAT,
+	Weight_t		FLOAT,			
 	Style			VARCHAR(20),
-	Material_s		VARCHAR(100),
+	Material		VARCHAR(50),
 	PRIMARY KEY(ArtID),
     CONSTRAINT SAFFK
 		FOREIGN KEY(ArtID) REFERENCES ART_OBJECT(ArtID)
 			ON DELETE CASCADE		ON UPDATE CASCADE);
- INSERT INTO STATUE (ArtID, Height_meters, Weight_tonnes, Style, Material_s) 
- VALUES ('L-0001', '46.0', '204.1', 'neoclassical', 'Copper, Steel, Gold, Cast Iron'),
+ INSERT INTO STATUE (ArtID, Height_m, Weight_t, Style, Material) 
+ VALUES ('L-0001', '46.0', '204.1', 'neoclassical', 'Metal'),
  ('L-0002', '28.0', '635.0', 'catholic', 'Cement');
 
 DROP ROLE IF EXISTS dguest@localhost;
