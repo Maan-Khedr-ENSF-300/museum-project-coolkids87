@@ -687,7 +687,7 @@ def main():
         password=passcode,
         auth_plugin = 'mysql_native_password')  
     cur = cnx.cursor()
-    fd = open("DB.sql", "r")
+    fd = open("museum_database.sql", "r")
     sqlfile = fd.read()
     fd.close()
     sqlcommands = sqlfile.split(';')
