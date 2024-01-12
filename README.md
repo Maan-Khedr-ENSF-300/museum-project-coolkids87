@@ -1,12 +1,18 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-c66648af7eb3fe8bc4f294546bfd86ef473780cde1dea487d3c4ff354943c9ae.svg)](https://classroom.github.com/online_ide?assignment_repo_id=9366232&assignment_repo_type=AssignmentRepo)
 # Museum-Project
-## To Do list:
-- modify this file to include your group members information and tasks assigned per each
-- modify this file to include any notes on how to use and run the program
-- include any features you have added beyond the minimum requirements in a features list
+###### Final Project for Software Engineering Practices for Data Management
+###### Completed by Evan Barker, Kenneth Zhen, and Karam Baroud
 
 ## Organization:
-- code folder: contains your main python application code
-- sql scripts folder: contains all sql scripts required (database creation and initialization, sql script with query tasks in the handout, etc...)
-- database design folder: EERD and relational schema
-- optional data folder: has data files that you can sue to load data to your application if you use this optional implementation requirement
+- museum_interface.py: contains the main python application code.
+- museum_database.sql: contains sql script for database creation and initialization.
+- db_queries.sql: contains sql script with query, update, and delete tasks.
+- database_design (folder): contains EERD (Enhanced Entity-Relationship Diagram and relational model.
+- test_insert_tuple_fxn.txt: contains some table entries for testing insertion.
+
+## How to Use and Run the Program:
+- Initialize the database on your local system using MySQL Workbench
+- Run the program using the command $ python museum_interface.py
+- Select one of the roles available
+  - Admin and Data Entry roles can log in using username "root" and password "password"
+  - Guest users log in automatically
+- After logging in, follow the prompts in your terminal to use the program
