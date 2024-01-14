@@ -1,0 +1,2 @@
+('Hans Holbein', 'Renaissance', 'Book', 'Biblical', 'Germany', '1497-01-01', '1543-01-01')
+('Andrea Della Robbia', 'Renaissance', 'Statues', 'Statues', 'Italy', '1435-10-20', '1525-08-04')
