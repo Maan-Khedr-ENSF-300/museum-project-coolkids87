@@ -678,8 +678,8 @@ def main():
         username= input("user name:")
         passcode= input("password:")
     else:
-        username="guest"   
-        passcode=None
+        username="root"   
+        passcode="password"
     cnx = mysql.connector.connect(
         host="127.0.0.1",
         port=3306,
